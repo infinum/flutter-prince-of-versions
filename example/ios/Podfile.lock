@@ -1,33 +1,29 @@
 PODS:
   - Flutter (1.0.0)
-  - flutter_locker (0.0.1):
+  - flutter_prince_of_versions (0.0.1):
     - Flutter
-    - Locker
-    - SwiftProtobuf (~> 1.4)
-  - Locker (2.2.0)
-  - SwiftProtobuf (1.8.0)
+    - PrinceOfVersions
+  - PrinceOfVersions (4.0.0)
 
 DEPENDENCIES:
   - Flutter (from `Flutter`)
-  - flutter_locker (from `.symlinks/plugins/flutter_locker/ios`)
+  - flutter_prince_of_versions (from `.symlinks/plugins/flutter_prince_of_versions/ios`)
 
 SPEC REPOS:
-  https://github.com/CocoaPods/Specs.git:
-    - Locker
-    - SwiftProtobuf
+  trunk:
+    - PrinceOfVersions
 
 EXTERNAL SOURCES:
   Flutter:
     :path: Flutter
-  flutter_locker:
-    :path: ".symlinks/plugins/flutter_locker/ios"
+  flutter_prince_of_versions:
+    :path: ".symlinks/plugins/flutter_prince_of_versions/ios"
 
 SPEC CHECKSUMS:
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
-  flutter_locker: 7b68397d9e3df59593fe5d0c4f1098288b930a39
-  Locker: d3ad3cfcc09af4ae7e64023c4ad28bbd597ee11a
-  SwiftProtobuf: 2cbd9409689b7df170d82a92a33443c8e3e14a70
+  flutter_prince_of_versions: 896aa09ca903aea0a5e283a580c234f8b4375bb9
+  PrinceOfVersions: 1e3803a8697c9a1af6b3d775394d65e2a8f83312
 
 PODFILE CHECKSUM: 2609452b760cd11039b14039a86564367a3d8ab9
 
-COCOAPODS: 1.9.1
+COCOAPODS: 1.10.0

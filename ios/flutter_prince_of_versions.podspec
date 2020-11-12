@@ -1,6 +1,6 @@
 #
 # To learn more about a Podspec see http://guides.cocoapods.org/syntax/podspec.html.
-# Run `pod lib lint flutter_locker.podspec' to validate before publishing.
+# Run `pod lib lint flutter_prince_of_versions.podspec' to validate before publishing.
 #
 Pod::Spec.new do |s|
   s.name             = 'flutter_prince_of_versions'
@@ -15,7 +15,7 @@ A new flutter plugin project.
   s.source           = { :path => '.' }
   s.source_files = 'Classes/**/*'
   s.dependency 'Flutter'
-  s.dependency 'Prince of vVersions'
+  s.dependency 'PrinceOfVersions'
   s.platform = :ios, '9.0'
 
   # Flutter.framework does not contain a i386 slice. Only x86_64 simulators are supported.

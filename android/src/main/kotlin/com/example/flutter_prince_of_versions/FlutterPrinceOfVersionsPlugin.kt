@@ -31,41 +31,25 @@ public class FlutterPrinceOfVersionsPlugin : FlutterPlugin, MethodCallHandler {
     }
 
     override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
-        when (call.method) {
-            FlutterLocker.ProtoMethodInterface.canAuthenticate.number.toString() -> canAuthenticate(
-                result
-            )
-            FlutterLocker.ProtoMethodInterface.saveSecret.number.toString() -> saveSecret(
-                call,
-                result
-            )
-            FlutterLocker.ProtoMethodInterface.retrieveSecret.number.toString() -> retrieveSecret(
-                call,
-                result
-            )
-            FlutterLocker.ProtoMethodInterface.deleteSecret.number.toString() -> deleteSecret(
-                call,
-                result
-            )
-            else -> result.notImplemented()
-        }
+//        when (call.method) {
+//            FlutterLocker.ProtoMethodInterface.canAuthenticate.number.toString() -> canAuthenticate(
+//                result
+//            )
+//            FlutterLocker.ProtoMethodInterface.saveSecret.number.toString() -> saveSecret(
+//                call,
+//                result
+//            )
+//            FlutterLocker.ProtoMethodInterface.retrieveSecret.number.toString() -> retrieveSecret(
+//                call,
+//                result
+//            )
+//            FlutterLocker.ProtoMethodInterface.deleteSecret.number.toString() -> deleteSecret(
+//                call,
+//                result
+//            )
+//            else -> result.notImplemented()
+//        }
     }
-
-    private fun canAuthenticate(result: Result) {
-        result.success(goldfinger.canAuthenticate())
-    }
-
-    private fun saveSecret(call: MethodCall, result: Result) {
-        val request = FlutterLocker.ProtoSaveRequest.parseFrom(call.arguments as ByteArray)
-
-        val prompt = Goldfinger.PromptParams.Builder(activity as FragmentActivity)
-            .title(request.androidPrompt.titleText)
-            .description(request.androidPrompt.description)
-            .negativeButtonText(request.androidPrompt.cancelText)
-            .build()
-
-    }
-
 
 
     override fun onDetachedFromEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
@@ -91,5 +75,5 @@ public class FlutterPrinceOfVersionsPlugin : FlutterPlugin, MethodCallHandler {
     //endregion
 
     // When saving to prefs we add this prefix to avoid any possible clash with other keys
-    fun String.toPrefsKey(): String = "\$_flutter_locker_$this"
+    fun String.toPrefsKey(): String = "\$_flutter_prince_of_versions_$this"
 }
