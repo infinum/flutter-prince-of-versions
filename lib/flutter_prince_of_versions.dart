@@ -1,0 +1,1 @@
+library flutter_prince_of_versions;

@@ -1,0 +1,22 @@
+name: flutter_prince_of_versions_example
+description: Demonstrates how to use the flutter_prince_of_versions plugin.
+publish_to: 'none'
+
+environment:
+  sdk: ">=2.1.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  flutter_prince_of_versions:
+    path: ../
+
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+
+  uses-material-design: true
