@@ -12,9 +12,11 @@ public class FlutterPrinceOfVersionsPlugin: NSObject, FlutterPlugin {
     }
     
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
-        guard let rawMethod = Int(call.method) else {
-            return result(FlutterMethodNotImplemented)
-        }
+//        guard let rawMethod = Int(call.method) else {
+//            return result(FlutterMethodNotImplemented)
+//        }
+
+        result("maroje")
 
     }
 }

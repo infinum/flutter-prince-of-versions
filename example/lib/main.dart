@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_prince_of_versions/flutter_prince_of_versions.dart';
 
 void main() {
   runApp(MaterialApp(home: Scaffold(body: MyApp())));
@@ -27,7 +28,13 @@ class _MyAppState extends State<MyApp> {
             ),
           ),
           SizedBox(height: 40),
-          CupertinoButton.filled(child: Text('Can authenticate'), onPressed: () {}),
+          CupertinoButton.filled(
+              child: Text('Can authenticate'),
+              onPressed: () async {
+                final l = await FlutterPrinceOfVersions.canAuthenticate();
+                print(l);
+                print('lololololollooololoolololoo');
+              }),
           SizedBox(height: 20),
           CupertinoButton.filled(child: Text('Save secret'), onPressed: () {}),
           SizedBox(height: 20),

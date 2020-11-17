@@ -1,18 +1,18 @@
 part of flutter_prince_of_versions;
 //
 // /// Flutter plugin that secures your secrets in keychain using biometric authentication.
-// class FlutterLocker {
+
+class FlutterPrinceOfVersions {
 //   /// Singleton
-//   FlutterLocker._();
+  FlutterPrinceOfVersions._();
 //
-//   static const MethodChannel _channel = const MethodChannel('flutter_locker');
+  static const MethodChannel _channel = const MethodChannel('flutter_prince_of_versions');
 //
 //   /// Checks if the devices has biometric features
-//   static Future<bool> canAuthenticate() async {
-//     final bool success = await _channel.invokeMethod(
-//         protos.ProtoMethodInterface.canAuthenticate.value.toString());
-//     return success;
-//   }
+  static Future<String> canAuthenticate() async {
+    final String success = await _channel.invokeMethod("protos.ProtoMethodInterface.canAuthenticate.value.toString()");
+    return success;
+  }
 //
 //   /// Saves the secret.
 //   ///
@@ -62,4 +62,4 @@ part of flutter_prince_of_versions;
 //       }
 //     }
 //   }
-// }
+}

@@ -23,14 +23,12 @@ rootProject.allprojects {
 
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
-apply plugin: 'com.google.protobuf'
 
 android {
     compileSdkVersion 28
 
     sourceSets {
         main {
-            proto.srcDir '../protos'
             java.srcDirs += 'src/main/kotlin'
         }
     }

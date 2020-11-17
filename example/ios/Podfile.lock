@@ -2,16 +2,10 @@ PODS:
   - Flutter (1.0.0)
   - flutter_prince_of_versions (0.0.1):
     - Flutter
-    - PrinceOfVersions
-  - PrinceOfVersions (4.0.0)
 
 DEPENDENCIES:
   - Flutter (from `Flutter`)
   - flutter_prince_of_versions (from `.symlinks/plugins/flutter_prince_of_versions/ios`)
-
-SPEC REPOS:
-  trunk:
-    - PrinceOfVersions
 
 EXTERNAL SOURCES:
   Flutter:
@@ -21,9 +15,8 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
-  flutter_prince_of_versions: 896aa09ca903aea0a5e283a580c234f8b4375bb9
-  PrinceOfVersions: 1e3803a8697c9a1af6b3d775394d65e2a8f83312
+  flutter_prince_of_versions: 71b317239a9e008a50dba631286e9066eeaf5ee4
 
-PODFILE CHECKSUM: 2609452b760cd11039b14039a86564367a3d8ab9
+PODFILE CHECKSUM: aafe91acc616949ddb318b77800a7f51bffa2a4c
 
 COCOAPODS: 1.10.0

@@ -9,11 +9,11 @@ environment:
   flutter: ">=1.10.0"
 
 dependencies:
-  protobuf: ^1.0.1
   flutter:
     sdk: flutter
 
 dev_dependencies:
+  pigeon: ^0.1.15
   flutter_test:
     sdk: flutter
 
