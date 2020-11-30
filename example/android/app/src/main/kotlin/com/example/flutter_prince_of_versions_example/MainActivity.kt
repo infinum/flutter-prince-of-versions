@@ -1,6 +1,6 @@
-package com.example.flutter_locker_example
+package com.example.flutter_prince_of_versions_example
 
-import com.example.flutter_locker.FlutterPrinceOfVersionsPlugin
+import com.example.flutter_prince_of_versions.FlutterPrinceOfVersionsPlugin
 import io.flutter.embedding.android.FlutterFragmentActivity
 import io.flutter.embedding.engine.FlutterEngine
 

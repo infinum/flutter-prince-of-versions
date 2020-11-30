@@ -1,65 +1,44 @@
 part of flutter_prince_of_versions;
-//
-// /// Flutter plugin that secures your secrets in keychain using biometric authentication.
 
+/// Library for checking if an update is available for your application.
+/// [FlutterPrinceOfVersions] parses a JSON response stored on server and returns the result.
+/// There are three possible results: [UpdateStatus.noUpdateAvailable], [UpdateStatus.requiredUpdateNeeded] and
+/// [UpdateStatus.newUpdateAvailable]. No update means there is not any available update for your application.
+/// Required update means that and update is available and that the user must download and install it before using the app.
+/// If the result is New update then user should be notified that he can install a new version of the application.
+/// Additionally, you can create a custom flow using [checkForUpdates] method which will return parsed JSON data.
 class FlutterPrinceOfVersions {
-//   /// Singleton
   FlutterPrinceOfVersions._();
-//
-  static const MethodChannel _channel = const MethodChannel('flutter_prince_of_versions');
-//
-//   /// Checks if the devices has biometric features
-  static Future<String> canAuthenticate() async {
-    final String success = await _channel.invokeMethod("protos.ProtoMethodInterface.canAuthenticate.value.toString()");
-    return success;
+  static const MethodChannel _channel = const MethodChannel(Constants.channelName);
+
+  /// Returns true if [UpdateStatus] is [UpdateStatus.newUpdateAvailable] or [UpdateStatus.requiredUpdateNeeded].
+  /// Receives an url to the JSON.
+  static Future<bool> isUpdateAvailable(String url) async {
+    final Map<dynamic, dynamic> data = await _channel.invokeMethod(Constants.checkForUpdatesMethodName, [url]);
+    final UpdateData updateData = UpdateData.fromMap(data);
+    return updateData.status == UpdateStatus.newUpdateAvailable ||
+        updateData.status == UpdateStatus.requiredUpdateNeeded;
   }
-//
-//   /// Saves the secret.
-//   ///
-//   /// On Android prompt is shown, while on iOS there is no need for the prompt when saving.
-//   static Future<void> save(SaveSecretRequest request) async {
-//     await _catchCommonError(() async {
-//       await _channel.invokeMethod(
-//         protos.ProtoMethodInterface.saveSecret.value.toString(),
-//         request.toProto().writeToBuffer(),
-//       );
-//     });
-//   }
-//
-//   /// Retrieves the secret.
-//   ///
-//   /// You need to provide a prompt for Android and iOS. Prompt for iOS is used only with TouchID. FaceID uses strings for Info.plist.
-//   static Future<String> retrieve(RetrieveSecretRequest request) async {
-//     return await _catchCommonError(() async {
-//       final String secret = await _channel.invokeMethod(
-//           protos.ProtoMethodInterface.retrieveSecret.value.toString(),
-//           request.toProto().writeToBuffer());
-//       return secret;
-//     });
-//   }
-//
-//   /// Deletes the key.
-//   static Future<void> delete(String key) async {
-//     final request = protos.ProtoDeleteRequest()..key = key;
-//     await _channel.invokeMethod(
-//         ProtoMethodInterface.deleteSecret.value.toString(),
-//         request.writeToBuffer());
-//   }
-//
-//   static _catchCommonError(Function function) async {
-//     try {
-//       return await function();
-//     } catch (on, _) {
-//       // try to intercept common exceptions
-//       if (on is! PlatformException) {
-//         rethrow;
-//       }
-//
-//       if (LockerException.fromCode(on.code) != null) {
-//         throw LockerException.fromCode(on.code);
-//       } else {
-//         rethrow;
-//       }
-//     }
-//   }
+
+  /// Returns parsed JSON data modeled as [UpdateData].
+  /// Receives an url to the JSON.
+  static Future<UpdateData> checkForUpdates(String url) async {
+    final Map<dynamic, dynamic> data = await _channel.invokeMethod(Constants.checkForUpdatesMethodName, [url]);
+    return UpdateData.fromMap(data);
+  }
+
+  /// Returns true only if [UpdateStatus] is [UpdateStatus.requiredUpdateNeeded].
+  /// Receives an url to the JSON.
+  static Future<bool> isMandatoryUpdateAvailable(String url) async {
+    final Map<dynamic, dynamic> data = await _channel.invokeMethod(Constants.checkForUpdatesMethodName, [url]);
+    final UpdateData updateData = UpdateData.fromMap(data);
+    return updateData.status == UpdateStatus.requiredUpdateNeeded;
+  }
+
+  /// Returns information from PlayStore or AppStore as [UpdateData].
+  /// NOTE: Not tested yet.
+  static Future<UpdateData> checkForUpdatesFromStore() async {
+    final Map<dynamic, dynamic> data = await _channel.invokeMethod(Constants.checkUpdatesFromStoreMethodName);
+    return UpdateData.fromMap(data);
+  }
 }

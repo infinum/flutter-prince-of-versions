@@ -5,7 +5,7 @@ repository: https://github.com/infinum/flutter-prince-of-versions
 homepage: https://github.com/infinum/flutter-prince-of-versions
 
 environment:
-  sdk: ">=2.3.0 <3.0.0"
+  sdk: ">=2.6.0 <3.0.0"
   flutter: ">=1.10.0"
 
 dependencies:
@@ -13,7 +13,6 @@ dependencies:
     sdk: flutter
 
 dev_dependencies:
-  pigeon: ^0.1.15
   flutter_test:
     sdk: flutter
 

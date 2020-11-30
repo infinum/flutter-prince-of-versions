@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_prince_of_versions/flutter_prince_of_versions.dart';
@@ -12,8 +14,8 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  String key = 'pwdkey';
-  String secret = '1111';
+  String androidUrl = 'https://pastebin.com/raw/FBMxHpN7';
+  String iOSUrl = 'https://pastebin.com/raw/0MfYmWGu';
 
   @override
   Widget build(BuildContext context) {
@@ -23,26 +25,62 @@ class _MyAppState extends State<MyApp> {
           SizedBox(height: 100),
           Center(
             child: Text(
-              'Locker example',
+              'Prince of Versions example',
               style: TextStyle(fontSize: 24),
             ),
           ),
           SizedBox(height: 40),
           CupertinoButton.filled(
-              child: Text('Can authenticate'),
+              child: Text('Is update available'),
               onPressed: () async {
-                final l = await FlutterPrinceOfVersions.canAuthenticate();
-                print(l);
-                print('lololololollooololoolololoo');
+                String url = Platform.isAndroid ? androidUrl : iOSUrl;
+                if (!await FlutterPrinceOfVersions.isUpdateAvailable(url)) {
+                  return;
+                }
               }),
           SizedBox(height: 20),
-          CupertinoButton.filled(child: Text('Save secret'), onPressed: () {}),
+          CupertinoButton.filled(
+              child: Text('Check for updates'),
+              onPressed: () async {
+                String url = Platform.isAndroid ? androidUrl : iOSUrl;
+
+                final data = await FlutterPrinceOfVersions.checkForUpdates(url);
+                if (data.updateInfo.lastVersionAvailable.major >= 2) {
+                  return;
+                }
+                showAlert("Info", "Last available major version is 1.");
+              }),
           SizedBox(height: 20),
-          CupertinoButton.filled(child: Text('Retrieve secret'), onPressed: () {}),
-          SizedBox(height: 20),
-          CupertinoButton.filled(child: Text('Delete secret'), onPressed: () {})
+          CupertinoButton.filled(
+              child: Text('Is mandatory update available'),
+              onPressed: () async {
+                String url = Platform.isAndroid ? androidUrl : iOSUrl;
+                if (!await FlutterPrinceOfVersions.isMandatoryUpdateAvailable(url)) {
+                  return;
+                }
+                showAlert("Mandatory update available", "A mandatory update for your app is available.");
+              }),
         ],
       ),
+    );
+  }
+
+  void showAlert(String title, String content) {
+    showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) {
+        return CupertinoAlertDialog(
+          title: Text(title),
+          content: Text(content),
+          actions: <Widget>[
+            CupertinoDialogAction(
+              child: Text("Ok"),
+              isDestructiveAction: false,
+              onPressed: () => Navigator.pop(context, true),
+            ),
+          ],
+        );
+      },
     );
   }
 }
