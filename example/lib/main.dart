@@ -37,6 +37,7 @@ class _MyAppState extends State<MyApp> {
                 if (!await FlutterPrinceOfVersions.isUpdateAvailable(url)) {
                   return;
                 }
+                showAlert("New available", "A new update for your app is available.");
               }),
           SizedBox(height: 20),
           CupertinoButton.filled(
@@ -45,10 +46,9 @@ class _MyAppState extends State<MyApp> {
                 String url = Platform.isAndroid ? androidUrl : iOSUrl;
 
                 final data = await FlutterPrinceOfVersions.checkForUpdates(url);
-                if (data.updateInfo.lastVersionAvailable.major >= 2) {
-                  return;
-                }
-                showAlert("Info", "Last available major version is 1.");
+                print('Update status: ${data.status.toString()}');
+                print('Current version: ${data.version.major}');
+                print('Last available major version: ${data.updateInfo.lastVersionAvailable.major}');
               }),
           SizedBox(height: 20),
           CupertinoButton.filled(
