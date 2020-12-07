@@ -34,7 +34,12 @@ class FlutterPrinceOfVersionsPlugin : FlutterPlugin, MethodCallHandler, Activity
 
     override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
         when (call.method) {
-            "check_for_updates" -> checkForUpdates((call.arguments as List<*>).first(), result)
+            "check_for_updates" ->  {
+                val argsList = call.arguments as List<*>
+                val url = argsList.first() as String
+                val requirements = argsList.last() as Map<String, String>
+                checkForUpdates(url, requirements, result)
+            }
             "check_updates_from_play_store" -> checkForUpdatesFromPlayStore(result)
         }
     }
@@ -61,11 +66,9 @@ class FlutterPrinceOfVersionsPlugin : FlutterPlugin, MethodCallHandler, Activity
                 }
                 .withOnDownloaded { handler, info ->
                     println("on downloaded")
-
                 }
                 .withOnDownloading { info, bytes, total ->
                     println("on downloading")
-
                 }
                 .withOnError {
                     resultt.success("woooo")
@@ -77,59 +80,41 @@ class FlutterPrinceOfVersionsPlugin : FlutterPlugin, MethodCallHandler, Activity
                 }
                 .withOnInstalled {
                     println("on installed")
-
                 }
-                .withOnInstalling {                     println("on installing")
+                .withOnInstalling {
+                    println("on installing")
                 }
                 .withOnUpdateAccepted { info, status, result ->
                     println("on update accept")
-
                 }
                 .withOnUpdateDeclined { info, status, result ->
                     println("on update decline")
-
                 }
                 .withOnNoUpdate { metadata, updateInfo ->
                     println("on no update")
-
                 }
                 .withOnPending {
                     println("on pending")
-
                 }
                 .build()
 
         queenOfVersions.checkForUpdates(loader, callback);
 
-//        QueenOfVersions.checkForUpdates(
-//                this.activity as FragmentActivity,
-//                QueenOfVersions.Options.Builder()
-//                        .withOnInAppUpdateAvailable { currentStatus, _, _ ->
-//                            println("a tu buraz li ovde?")
-//                            println(currentStatus)
-//                            currentStatus
-//                        }
-//                        // use methods in builder to implement specific behavior
-//                        // there are equivalent methods as in QueenOfVersions builder
-//                        .build(),
-//                callback
-//        )
-
     }
 
-    private fun checkForUpdates(url: Any?, @NonNull flutterResult: Result) {
-        val updater = PrinceOfVersions(context)
+    private fun checkForUpdates(url: Any?, requirements: Map<String, String>, @NonNull flutterResult: Result) {
+        val updater = PrinceOfVersions.Builder()
+        requirements.forEach { updater.addRequirementsChecker(it.key) { value ->  it.value == value } }
         val loader: Loader = NetworkLoader(url as String)
         val callback: UpdaterCallback = object : UpdaterCallback {
             override fun onSuccess(result: UpdateResult) {
                 flutterResult.success(result.toMap())
             }
             override fun onError(throwable: Throwable) {
-                println(throwable.toString())
                 flutterResult.error("1", throwable.message, null)
             }
         }
-        updater.checkForUpdates(loader, callback)
+        updater.build(context).checkForUpdates(loader, callback)
     }
 
     override fun onDetachedFromActivity() {
@@ -154,24 +139,24 @@ class FlutterPrinceOfVersionsPlugin : FlutterPlugin, MethodCallHandler, Activity
 
 fun UpdateResult.toMap(): Map<String, Any> {
     return mapOf(
-            "updateInfo" to info.toMap(),
-            "version" to mapOf("major" to updateVersion),
-            "status" to status.toMap()
+            Constants.UPDATE_INFO to info.toMap(),
+            Constants.VERSION to mapOf(Constants.MAJOR to updateVersion),
+            Constants.STATUS to status.toMap()
     )
 }
 
 fun UpdateInfo.toMap(): Map<String, Any> {
-    return mapOf<String, Any>("lastVersionAvailable" to mapOf("major" to lastVersionAvailable),
-            "installedVersion" to mapOf("major" to installedVersion),
-            "requiredVersion" to mapOf("major" to requiredVersion))
+    return mapOf<String, Any>(Constants.LAST_VERSION_AVAILABLE to mapOf(Constants.MAJOR to lastVersionAvailable),
+            Constants.INSTALLED_VERSION to mapOf(Constants.MAJOR to installedVersion),
+            Constants.REQUIRED_VERSION to mapOf(Constants.MAJOR to requiredVersion))
 }
 
 
 fun UpdateStatus.toMap(): String {
     return when(this) {
         UpdateStatus.NEW_UPDATE_AVAILABLE -> Constants.UPDATE_AVAILABLE
-        UpdateStatus.NO_UPDATE_AVAILABLE -> "no-update"
-        UpdateStatus.REQUIRED_UPDATE_NEEDED -> "required-update"
+        UpdateStatus.NO_UPDATE_AVAILABLE -> Constants.NO_UPDATE
+        UpdateStatus.REQUIRED_UPDATE_NEEDED -> Constants.REQUIRED_UPDATE
     }
 
 }
