@@ -8,12 +8,17 @@ part of flutter_prince_of_versions;
 /// If the result is New update then user should be notified that he can install a new version of the application.
 /// Additionally, you can create a custom flow using [checkForUpdates] method which will return parsed JSON data.
 class FlutterPrinceOfVersions {
-  FlutterPrinceOfVersions._();
-  static const MethodChannel _channel = const MethodChannel(Constants.channelName);
+  FlutterPrinceOfVersions(Callback callback) {
+    _callback = callback;
+    _channel.setMethodCallHandler(_handleAndroidInvocations);
+  }
+
+  MethodChannel _channel = const MethodChannel(Constants.channelName);
+  Callback _callback;
 
   /// Returns parsed JSON data modeled as [UpdateData].
   /// Receives an url to the JSON.
-  static Future<UpdateData> checkForUpdates(
+  Future<UpdateData> checkForUpdates(
       {@required String url,
       bool shouldPinCertificates,
       Map<String, String> httpHeaderFields,
@@ -25,8 +30,7 @@ class FlutterPrinceOfVersions {
 
   /// Returns information from PlayStore or AppStore as [UpdateData].
   /// NOTE: Not tested yet.
-  static Future<UpdateData> checkForUpdatesFromAppStore(
-      {bool trackPhasedRelease = true, bool notifyOnce = false}) async {
+  Future<UpdateData> checkForUpdatesFromAppStore({bool trackPhasedRelease = true, bool notifyOnce = false}) async {
     if (Platform.isAndroid) {
       return null;
     }
@@ -35,12 +39,36 @@ class FlutterPrinceOfVersions {
     return UpdateData.fromMap(data);
   }
 
-  static Future<UpdateData> checkForUpdatesFromGooglePlay() async {
+  Future<void> checkForUpdatesFromGooglePlay() async {
     if (Platform.isIOS) {
-      return null;
+      return;
     }
-    final data = await _channel.invokeMethod(Constants.checkUpdatesFromPlayStoreMethodName);
-    print(data.toString());
-    return null;
+    await _channel.invokeMethod(Constants.checkUpdatesFromPlayStoreMethodName);
+  }
+
+  Future<void> _handleAndroidInvocations(MethodCall call) async {
+    if (call.method == "canceled") {
+      _callback.canceled();
+    } else if (call.method == "mandatory_update_not_available") {
+      _callback.mandatoryUpdateNotAvailable();
+    } else if (call.method == "downloaded") {
+      _callback.downloaded();
+    } else if (call.method == "downloading") {
+      _callback.downloading();
+    } else if (call.method == "error") {
+      _callback.error();
+    } else if (call.method == "installed") {
+      _callback.installed();
+    } else if (call.method == "installing") {
+      _callback.installing();
+    } else if (call.method == "update_accepted") {
+      _callback.updateAccepted();
+    } else if (call.method == "update_declined") {
+      _callback.updateDeclined();
+    } else if (call.method == "no_update") {
+      _callback.noUpdate();
+    } else if (call.method == "on_pending") {
+      _callback.onPending();
+    }
   }
 }

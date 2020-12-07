@@ -6,6 +6,7 @@ import androidx.annotation.NonNull
 import androidx.fragment.app.FragmentActivity
 import co.infinum.princeofversions.*
 import co.infinum.queenofversions.QueenOfVersions
+import co.infinum.queenofversions.QueenOfVersionsInAppUpdateInfo
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
@@ -34,16 +35,16 @@ class FlutterPrinceOfVersionsPlugin : FlutterPlugin, MethodCallHandler, Activity
 
     override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
         when (call.method) {
-            "check_for_updates" ->  {
+            "check_for_updates" -> {
                 val argsList = call.arguments as List<*>
                 val url = argsList.first() as String
                 val requirements = argsList.last() as Map<String, String>
                 checkForUpdates(url, requirements, result)
             }
-            "check_updates_from_play_store" -> checkForUpdatesFromPlayStore(result)
+            "check_updates_from_play_store" -> checkForUpdatesFromPlayStore()
         }
     }
-    private fun checkForUpdatesFromPlayStore(@NonNull resultt: Result) {
+    private fun checkForUpdatesFromPlayStore() {
         val queenOfVersions = QueenOfVersions.Builder()
                 .build(this.activity as FragmentActivity)
 
@@ -52,48 +53,37 @@ class FlutterPrinceOfVersionsPlugin : FlutterPlugin, MethodCallHandler, Activity
 
         val callback = QueenOfVersions.Callback.Builder()
                 .withOnCanceled {
-                    println("on canceled")
+                    channel.invokeMethod("canceled", null)
                 }
-                .withOnMandatoryUpdateNotAvailable { requiredVersion, inAppUpdateInfo, metadata, updateInfo ->
-                    println("jesam li ovde?")
-                    println(requiredVersion)
-                    // for example show a message that update is required for application to work, but isn't available yet.
-
-                    // requiredVersion is version code of the update Prince of Versions claims is required
-                    // inAppUpdateInfo contains information about the update from Google Play
-                    // for metadata and updateInfo check Prince of Versions documentation
+                .withOnMandatoryUpdateNotAvailable { _, inAppUpdateInfo, _, updateInfo ->
+                    channel.invokeMethod("mandatory_update_not_available", arrayOf(inAppUpdateInfo.toMap(), updateInfo.toMap()))
                 }
-                .withOnDownloaded { handler, info ->
-                    println("on downloaded")
+                .withOnDownloaded { _, info ->
+                    channel.invokeMethod("downloaded", info.toMap())
                 }
-                .withOnDownloading { info, bytes, total ->
-                    println("on downloading")
+                .withOnDownloading { info, _, _ ->
+                    channel.invokeMethod("downloading", info.toMap())
                 }
                 .withOnError {
-                    resultt.success("woooo")
-                    println(it.localizedMessage)
-                    println(it.stackTrace.toString())
-                    println(it.message)
-                    println("on error")
-
+                    channel.invokeMethod("error", null)
                 }
                 .withOnInstalled {
-                    println("on installed")
+                    channel.invokeMethod("installed", it.toMap())
                 }
                 .withOnInstalling {
-                    println("on installing")
+                    channel.invokeMethod("installing", it.toMap())
                 }
                 .withOnUpdateAccepted { info, status, result ->
-                    println("on update accept")
+                    channel.invokeMethod("update_accepted", arrayOf(info.toMap(), status.toMap(), result?.toMap()))
                 }
                 .withOnUpdateDeclined { info, status, result ->
-                    println("on update decline")
+                    channel.invokeMethod("update_declined", arrayOf(info.toMap(), status.toMap(), result?.toMap()))
                 }
                 .withOnNoUpdate { metadata, updateInfo ->
-                    println("on no update")
+                    channel.invokeMethod("no_update", updateInfo?.toMap())
                 }
                 .withOnPending {
-                    println("on pending")
+                    channel.invokeMethod("on_pending", it.toMap())
                 }
                 .build()
 
@@ -134,6 +124,13 @@ class FlutterPrinceOfVersionsPlugin : FlutterPlugin, MethodCallHandler, Activity
     override fun onDetachedFromEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
         channel.setMethodCallHandler(null)
     }
+}
+
+fun QueenOfVersionsInAppUpdateInfo.toMap(): Map<String, Int?> {
+    return mapOf("versionCode" to versionCode(),
+                "updatePriority" to updatePriority(),
+                "clientVersionStalenessDays" to clientVersionStalenessDays()
+    )
 }
 
 fun UpdateResult.toMap(): Map<String, Any> {

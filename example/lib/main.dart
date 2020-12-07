@@ -4,6 +4,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_prince_of_versions/flutter_prince_of_versions.dart';
 
+import 'my_callback.dart';
+
 void main() {
   runApp(MaterialApp(home: Scaffold(body: MyApp())));
 }
@@ -35,7 +37,8 @@ class _MyAppState extends State<MyApp> {
               onPressed: () async {
                 String url = Platform.isAndroid ? androidUrl : iOSUrl;
 
-                final data = await FlutterPrinceOfVersions.checkForUpdates(url: url, shouldPinCertificates: false);
+                final data =
+                    await FlutterPrinceOfVersions(null).checkForUpdates(url: url, shouldPinCertificates: false);
                 print('Update status: ${data.status.toString()}');
                 print('Current version: ${data.version.major}');
                 print('Last available major version: ${data.updateInfo.lastVersionAvailable.major}');
@@ -45,17 +48,16 @@ class _MyAppState extends State<MyApp> {
               child: Text('App Store test'),
               onPressed: () async {
                 print('checking store stuff');
-                final data = await FlutterPrinceOfVersions.checkForUpdatesFromAppStore(
-                    trackPhasedRelease: true, notifyOnce: false);
+                final data = await FlutterPrinceOfVersions(null)
+                    .checkForUpdatesFromAppStore(trackPhasedRelease: true, notifyOnce: false);
               }),
           SizedBox(height: 20),
           CupertinoButton.filled(
               child: Text('Play Store test'),
               onPressed: () async {
                 print('checking play store stuff');
-                // final data = await FlutterPrinceOfVersions.checkForUpdatesFromGooglePlay();
-
-                // print(data.toString());
+                final Callback c = MyCallback(context);
+                await FlutterPrinceOfVersions(c).checkForUpdatesFromGooglePlay();
               }),
         ],
       ),
