@@ -31,34 +31,31 @@ class _MyAppState extends State<MyApp> {
           ),
           SizedBox(height: 40),
           CupertinoButton.filled(
-              child: Text('Is update available'),
-              onPressed: () async {
-                String url = Platform.isAndroid ? androidUrl : iOSUrl;
-                if (!await FlutterPrinceOfVersions.isUpdateAvailable(url)) {
-                  return;
-                }
-              }),
-          SizedBox(height: 20),
-          CupertinoButton.filled(
               child: Text('Check for updates'),
               onPressed: () async {
                 String url = Platform.isAndroid ? androidUrl : iOSUrl;
 
-                final data = await FlutterPrinceOfVersions.checkForUpdates(url);
-                if (data.updateInfo.lastVersionAvailable.major >= 2) {
-                  return;
-                }
-                showAlert("Info", "Last available major version is 1.");
+                final data = await FlutterPrinceOfVersions.checkForUpdates(url: url, shouldPinCertificates: true);
+                print('Update status: ${data.status.toString()}');
+                print('Current version: ${data.version.major}');
+                print('Last available major version: ${data.updateInfo.lastVersionAvailable.major}');
               }),
           SizedBox(height: 20),
           CupertinoButton.filled(
-              child: Text('Is mandatory update available'),
+              child: Text('App Store test'),
               onPressed: () async {
-                String url = Platform.isAndroid ? androidUrl : iOSUrl;
-                if (!await FlutterPrinceOfVersions.isMandatoryUpdateAvailable(url)) {
-                  return;
-                }
-                showAlert("Mandatory update available", "A mandatory update for your app is available.");
+                print('checking store stuff');
+                final data = await FlutterPrinceOfVersions.checkForUpdatesFromAppStore(
+                    trackPhasedRelease: true, notifyOnce: false);
+              }),
+          SizedBox(height: 20),
+          CupertinoButton.filled(
+              child: Text('Play Store test'),
+              onPressed: () async {
+                print('checking play store stuff');
+                // final data = await FlutterPrinceOfVersions.checkForUpdatesFromGooglePlay();
+
+                // print(data.toString());
               }),
         ],
       ),

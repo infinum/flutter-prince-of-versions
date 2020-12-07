@@ -37,7 +37,6 @@ enum Constants {
     enum Flutter {
         static let channelName = "flutter_prince_of_versions"
         static let checkForUpdatesMethodName = "check_for_updates"
-        static let checkUpdatesFromStoreMethodName = "check_updates_from_store"
-
+        static let checkUpdatesFromStoreMethodName = "check_updates_from_app_store"
     }
 }

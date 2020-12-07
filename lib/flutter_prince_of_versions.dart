@@ -1,5 +1,8 @@
 library flutter_prince_of_versions;
 
+import 'dart:io';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 
 part 'src/constants.dart';
