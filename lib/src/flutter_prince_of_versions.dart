@@ -11,34 +11,36 @@ class FlutterPrinceOfVersions {
   FlutterPrinceOfVersions._();
   static const MethodChannel _channel = const MethodChannel(Constants.channelName);
 
-  /// Returns true if [UpdateStatus] is [UpdateStatus.newUpdateAvailable] or [UpdateStatus.requiredUpdateNeeded].
-  /// Receives an url to the JSON.
-  static Future<bool> isUpdateAvailable(String url) async {
-    final Map<dynamic, dynamic> data = await _channel.invokeMethod(Constants.checkForUpdatesMethodName, [url]);
-    final UpdateData updateData = UpdateData.fromMap(data);
-    return updateData.status == UpdateStatus.newUpdateAvailable ||
-        updateData.status == UpdateStatus.requiredUpdateNeeded;
-  }
-
   /// Returns parsed JSON data modeled as [UpdateData].
   /// Receives an url to the JSON.
-  static Future<UpdateData> checkForUpdates(String url) async {
-    final Map<dynamic, dynamic> data = await _channel.invokeMethod(Constants.checkForUpdatesMethodName, [url]);
+  static Future<UpdateData> checkForUpdates(
+      {@required String url,
+      bool shouldPinCertificates,
+      Map<String, String> httpHeaderFields,
+      Map<String, dynamic> requestOptions}) async {
+    final Map<dynamic, dynamic> data = await _channel.invokeMethod(
+        Constants.checkForUpdatesMethodName, [url, shouldPinCertificates, httpHeaderFields, requestOptions]);
     return UpdateData.fromMap(data);
-  }
-
-  /// Returns true only if [UpdateStatus] is [UpdateStatus.requiredUpdateNeeded].
-  /// Receives an url to the JSON.
-  static Future<bool> isMandatoryUpdateAvailable(String url) async {
-    final Map<dynamic, dynamic> data = await _channel.invokeMethod(Constants.checkForUpdatesMethodName, [url]);
-    final UpdateData updateData = UpdateData.fromMap(data);
-    return updateData.status == UpdateStatus.requiredUpdateNeeded;
   }
 
   /// Returns information from PlayStore or AppStore as [UpdateData].
   /// NOTE: Not tested yet.
-  static Future<UpdateData> checkForUpdatesFromStore() async {
-    final Map<dynamic, dynamic> data = await _channel.invokeMethod(Constants.checkUpdatesFromStoreMethodName);
+  static Future<UpdateData> checkForUpdatesFromAppStore(
+      {bool trackPhasedRelease = true, bool notifyOnce = false}) async {
+    if (Platform.isAndroid) {
+      return null;
+    }
+    final Map<dynamic, dynamic> data =
+        await _channel.invokeMethod(Constants.checkUpdatesFromAppStoreMethodName, [trackPhasedRelease, notifyOnce]);
     return UpdateData.fromMap(data);
+  }
+
+  static Future<UpdateData> checkForUpdatesFromGooglePlay() async {
+    if (Platform.isIOS) {
+      return null;
+    }
+    final data = await _channel.invokeMethod(Constants.checkUpdatesFromPlayStoreMethodName);
+    print(data.toString());
+    return null;
   }
 }

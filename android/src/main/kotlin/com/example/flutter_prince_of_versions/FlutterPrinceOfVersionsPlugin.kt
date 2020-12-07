@@ -50,7 +50,6 @@ class FlutterPrinceOfVersionsPlugin : FlutterPlugin, MethodCallHandler, Activity
         val loader = NetworkLoader("http://pastebin.com/raw/QFGjJrLP")
 
 
-        println("nessto")
         val callback = QueenOfVersions.Callback.Builder()
                 .withOnCanceled {
                     println("on canceled")

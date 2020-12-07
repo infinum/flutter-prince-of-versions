@@ -25,5 +25,6 @@ class Constants {
 
   static const channelName = "flutter_prince_of_versions";
   static const checkForUpdatesMethodName = "check_for_updates";
-  static const checkUpdatesFromStoreMethodName = "check_updates_from_store";
+  static const checkUpdatesFromAppStoreMethodName = "check_updates_from_app_store";
+  static const checkUpdatesFromPlayStoreMethodName = "check_updates_from_play_store";
 }
