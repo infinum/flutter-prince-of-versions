@@ -5,6 +5,7 @@ import PrinceOfVersions
 public class FlutterPrinceOfVersionsPlugin: NSObject, FlutterPlugin {
     public static func register(with registrar: FlutterPluginRegistrar) {
         let channel = FlutterMethodChannel(name: Constants.Flutter.channelName, binaryMessenger: registrar.messenger())
+
         let instance = FlutterPrinceOfVersionsPlugin()
         registrar.addMethodCallDelegate(instance, channel: channel)
     }
