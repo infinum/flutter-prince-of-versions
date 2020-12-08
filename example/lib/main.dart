@@ -47,7 +47,6 @@ class _MyAppState extends State<MyApp> {
           CupertinoButton.filled(
               child: Text('App Store test'),
               onPressed: () async {
-                print('checking store stuff');
                 final data = await FlutterPrinceOfVersions(null)
                     .checkForUpdatesFromAppStore(trackPhasedRelease: true, notifyOnce: false);
               }),
@@ -55,9 +54,8 @@ class _MyAppState extends State<MyApp> {
           CupertinoButton.filled(
               child: Text('Play Store test'),
               onPressed: () async {
-                print('checking play store stuff');
                 final Callback c = MyCallback(context);
-                await FlutterPrinceOfVersions(c).checkForUpdatesFromGooglePlay();
+                await FlutterPrinceOfVersions(c).checkForUpdatesFromGooglePlay("http://pastebin.com/raw/QFGjJrLP");
               }),
         ],
       ),

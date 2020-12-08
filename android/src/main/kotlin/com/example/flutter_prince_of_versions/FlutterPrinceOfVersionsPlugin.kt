@@ -27,7 +27,7 @@ class FlutterPrinceOfVersionsPlugin : FlutterPlugin, MethodCallHandler, Activity
 
         channel = MethodChannel(
                 flutterPluginBinding.getFlutterEngine().dartExecutor,
-                "flutter_prince_of_versions"
+                Constants.CHANNEL_NAME
         )
 
         channel.setMethodCallHandler(this)
@@ -35,55 +35,59 @@ class FlutterPrinceOfVersionsPlugin : FlutterPlugin, MethodCallHandler, Activity
 
     override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
         when (call.method) {
-            "check_for_updates" -> {
+            Constants.CHECK_FOR_UPDATES_METHOD_NAME -> {
                 val argsList = call.arguments as List<*>
                 val url = argsList.first() as String
                 val requirements = argsList.last() as Map<String, String>
                 checkForUpdates(url, requirements, result)
             }
-            "check_updates_from_play_store" -> checkForUpdatesFromPlayStore()
+            Constants.CHECK_UPDATES_FROM_PLAY_STORE_METHOD_NAME -> {
+                val argsList = call.arguments as List<*>
+                val url = argsList.first() as String
+                checkForUpdatesFromPlayStore(url)
+            }
         }
     }
-    private fun checkForUpdatesFromPlayStore() {
+    private fun checkForUpdatesFromPlayStore(url: String) {
         val queenOfVersions = QueenOfVersions.Builder()
                 .build(this.activity as FragmentActivity)
 
-        val loader = NetworkLoader("http://pastebin.com/raw/QFGjJrLP")
+        val loader = NetworkLoader(url)
 
 
         val callback = QueenOfVersions.Callback.Builder()
                 .withOnCanceled {
-                    channel.invokeMethod("canceled", null)
+                    channel.invokeMethod(Constants.CANCELED, null)
                 }
                 .withOnMandatoryUpdateNotAvailable { _, inAppUpdateInfo, _, updateInfo ->
-                    channel.invokeMethod("mandatory_update_not_available", arrayOf(inAppUpdateInfo.toMap(), updateInfo.toMap()))
+                    channel.invokeMethod(Constants.MANDATORY_UPDATE_NOT_AVAILABLE, arrayOf(inAppUpdateInfo.toMap(), updateInfo.toMap()))
                 }
                 .withOnDownloaded { _, info ->
-                    channel.invokeMethod("downloaded", info.toMap())
+                    channel.invokeMethod(Constants.DOWNLOADED, info.toMap())
                 }
                 .withOnDownloading { info, _, _ ->
-                    channel.invokeMethod("downloading", info.toMap())
+                    channel.invokeMethod(Constants.DOWNLOADING, info.toMap())
                 }
                 .withOnError {
-                    channel.invokeMethod("error", null)
+                    channel.invokeMethod(Constants.ERROR, null)
                 }
                 .withOnInstalled {
-                    channel.invokeMethod("installed", it.toMap())
+                    channel.invokeMethod(Constants.INSTALLED, it.toMap())
                 }
                 .withOnInstalling {
-                    channel.invokeMethod("installing", it.toMap())
+                    channel.invokeMethod(Constants.INSTALLING, it.toMap())
                 }
                 .withOnUpdateAccepted { info, status, result ->
-                    channel.invokeMethod("update_accepted", arrayOf(info.toMap(), status.toMap(), result?.toMap()))
+                    channel.invokeMethod(Constants.UPDATE_ACCEPTED, arrayOf(info.toMap(), status.toMap(), result?.toMap()))
                 }
                 .withOnUpdateDeclined { info, status, result ->
-                    channel.invokeMethod("update_declined", arrayOf(info.toMap(), status.toMap(), result?.toMap()))
+                    channel.invokeMethod(Constants.UPDATE_DECLINED, arrayOf(info.toMap(), status.toMap(), result?.toMap()))
                 }
-                .withOnNoUpdate { metadata, updateInfo ->
-                    channel.invokeMethod("no_update", updateInfo?.toMap())
+                .withOnNoUpdate { _, updateInfo ->
+                    channel.invokeMethod(Constants.NO_UPDATE_CALLBACK, updateInfo?.toMap())
                 }
                 .withOnPending {
-                    channel.invokeMethod("on_pending", it.toMap())
+                    channel.invokeMethod(Constants.ON_PENDING, it.toMap())
                 }
                 .build()
 
@@ -91,10 +95,10 @@ class FlutterPrinceOfVersionsPlugin : FlutterPlugin, MethodCallHandler, Activity
 
     }
 
-    private fun checkForUpdates(url: Any?, requirements: Map<String, String>, @NonNull flutterResult: Result) {
+    private fun checkForUpdates(url: String, requirements: Map<String, String>, @NonNull flutterResult: Result) {
         val updater = PrinceOfVersions.Builder()
         requirements.forEach { updater.addRequirementsChecker(it.key) { value ->  it.value == value } }
-        val loader: Loader = NetworkLoader(url as String)
+        val loader: Loader = NetworkLoader(url)
         val callback: UpdaterCallback = object : UpdaterCallback {
             override fun onSuccess(result: UpdateResult) {
                 flutterResult.success(result.toMap())
@@ -127,9 +131,9 @@ class FlutterPrinceOfVersionsPlugin : FlutterPlugin, MethodCallHandler, Activity
 }
 
 fun QueenOfVersionsInAppUpdateInfo.toMap(): Map<String, Int?> {
-    return mapOf("versionCode" to versionCode(),
-                "updatePriority" to updatePriority(),
-                "clientVersionStalenessDays" to clientVersionStalenessDays()
+    return mapOf(Constants.VERSION_CODE to versionCode(),
+                Constants.UPDATE_PRIORITY to updatePriority(),
+                Constants.CLIENT_VERSION_STALENESS_DAYS to clientVersionStalenessDays()
     )
 }
 
@@ -144,7 +148,8 @@ fun UpdateResult.toMap(): Map<String, Any> {
 fun UpdateInfo.toMap(): Map<String, Any> {
     return mapOf<String, Any>(Constants.LAST_VERSION_AVAILABLE to mapOf(Constants.MAJOR to lastVersionAvailable),
             Constants.INSTALLED_VERSION to mapOf(Constants.MAJOR to installedVersion),
-            Constants.REQUIRED_VERSION to mapOf(Constants.MAJOR to requiredVersion))
+            Constants.REQUIRED_VERSION to mapOf(Constants.MAJOR to requiredVersion)
+    )
 }
 
 
@@ -154,5 +159,4 @@ fun UpdateStatus.toMap(): String {
         UpdateStatus.NO_UPDATE_AVAILABLE -> Constants.NO_UPDATE
         UpdateStatus.REQUIRED_UPDATE_NEEDED -> Constants.REQUIRED_UPDATE
     }
-
 }

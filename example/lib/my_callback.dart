@@ -7,18 +7,19 @@ class MyCallback extends Callback {
     _context = context;
   }
   BuildContext _context;
+
   @override
   void canceled() {
     // no-op
   }
 
   @override
-  void downloaded() {
+  void downloaded(QueenOfVersionsUpdateData queenData) {
     // no-op
   }
 
   @override
-  void downloading() {
+  void downloading(QueenOfVersionsUpdateData queenData) {
     // no-op
   }
 
@@ -43,37 +44,37 @@ class MyCallback extends Callback {
   }
 
   @override
-  void installed() {
+  void installed(QueenOfVersionsUpdateData queenData) {
     // no-op
   }
 
   @override
-  void installing() {
+  void installing(QueenOfVersionsUpdateData queenData) {
     // no-op
   }
 
   @override
-  void mandatoryUpdateNotAvailable() {
+  void mandatoryUpdateNotAvailable(QueenOfVersionsUpdateData queenData, UpdateInfo updateInfo) {
     // no-op
   }
 
   @override
-  void noUpdate() {
+  void noUpdate(UpdateInfo updateInfo) {
     // no-op
   }
 
   @override
-  void onPending() {
+  void onPending(QueenOfVersionsUpdateData queenData) {
     // no-op
   }
 
   @override
-  void updateAccepted() {
+  void updateAccepted(QueenOfVersionsUpdateData queenData, UpdateStatus status, UpdateData updateData) {
     // no-op
   }
 
   @override
-  void updateDeclined() {
+  void updateDeclined(QueenOfVersionsUpdateData queenData, UpdateStatus status, UpdateData updateData) {
     // no-op
   }
 }

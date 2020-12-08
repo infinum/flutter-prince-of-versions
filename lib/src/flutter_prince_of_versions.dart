@@ -39,36 +39,53 @@ class FlutterPrinceOfVersions {
     return UpdateData.fromMap(data);
   }
 
-  Future<void> checkForUpdatesFromGooglePlay() async {
+  Future<void> checkForUpdatesFromGooglePlay(String url) async {
     if (Platform.isIOS) {
       return;
     }
-    await _channel.invokeMethod(Constants.checkUpdatesFromPlayStoreMethodName);
+    await _channel.invokeMethod(Constants.checkUpdatesFromPlayStoreMethodName, [url]);
   }
 
   Future<void> _handleAndroidInvocations(MethodCall call) async {
-    if (call.method == "canceled") {
+    List<dynamic> arguments = call.arguments as List<dynamic>;
+    if (call.method == Constants.canceled) {
       _callback.canceled();
-    } else if (call.method == "mandatory_update_not_available") {
-      _callback.mandatoryUpdateNotAvailable();
-    } else if (call.method == "downloaded") {
-      _callback.downloaded();
-    } else if (call.method == "downloading") {
-      _callback.downloading();
-    } else if (call.method == "error") {
+    } else if (call.method == Constants.mandatoryUpdateNotAvailable) {
+      final Map<dynamic, dynamic> firstArg = arguments.first;
+      final Map<dynamic, dynamic> secondArg = arguments.last;
+      _callback.mandatoryUpdateNotAvailable(QueenOfVersionsUpdateData.fromMap(firstArg), UpdateInfo.fromMap(secondArg));
+    } else if (call.method == Constants.downloaded) {
+      final Map<dynamic, dynamic> firstArg = arguments.first;
+      _callback.downloaded(QueenOfVersionsUpdateData.fromMap(firstArg));
+    } else if (call.method == Constants.downloading) {
+      final Map<dynamic, dynamic> firstArg = arguments.first;
+      _callback.downloading(QueenOfVersionsUpdateData.fromMap(firstArg));
+    } else if (call.method == Constants.error) {
       _callback.error();
-    } else if (call.method == "installed") {
-      _callback.installed();
-    } else if (call.method == "installing") {
-      _callback.installing();
-    } else if (call.method == "update_accepted") {
-      _callback.updateAccepted();
-    } else if (call.method == "update_declined") {
-      _callback.updateDeclined();
-    } else if (call.method == "no_update") {
-      _callback.noUpdate();
-    } else if (call.method == "on_pending") {
-      _callback.onPending();
+    } else if (call.method == Constants.installed) {
+      final Map<dynamic, dynamic> firstArg = arguments.first;
+      _callback.installed(QueenOfVersionsUpdateData.fromMap(firstArg));
+    } else if (call.method == Constants.installing) {
+      final Map<dynamic, dynamic> firstArg = arguments.first;
+      _callback.installing(QueenOfVersionsUpdateData.fromMap(firstArg));
+    } else if (call.method == Constants.updateAccepted) {
+      final Map<dynamic, dynamic> firstArg = arguments.first;
+      final Map<dynamic, dynamic> secondArg = arguments[1];
+      final Map<dynamic, dynamic> thirdArg = arguments.last;
+      _callback.updateAccepted(
+          QueenOfVersionsUpdateData.fromMap(firstArg), Status.fromMap(secondArg), UpdateData.fromMap(thirdArg));
+    } else if (call.method == Constants.updateDeclined) {
+      final Map<dynamic, dynamic> firstArg = arguments.first;
+      final Map<dynamic, dynamic> secondArg = arguments[1];
+      final Map<dynamic, dynamic> thirdArg = arguments.last;
+      _callback.updateDeclined(
+          QueenOfVersionsUpdateData.fromMap(firstArg), Status.fromMap(secondArg), UpdateData.fromMap(thirdArg));
+    } else if (call.method == Constants.noUpdateCallback) {
+      final Map<dynamic, dynamic> firstArg = arguments.first;
+      _callback.noUpdate(UpdateInfo.fromMap(firstArg));
+    } else if (call.method == Constants.onPending) {
+      final Map<dynamic, dynamic> firstArg = arguments.first;
+      _callback.onPending(QueenOfVersionsUpdateData.fromMap(firstArg));
     }
   }
 }
