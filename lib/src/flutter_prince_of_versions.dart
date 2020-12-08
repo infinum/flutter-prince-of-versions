@@ -46,7 +46,7 @@ class FlutterPrinceOfVersions {
     await _channel.invokeMethod(Constants.checkUpdatesFromPlayStoreMethodName, [url]);
   }
 
-  Future<void> _handleAndroidInvocations(MethodCall call) async {
+  Future<dynamic> _handleAndroidInvocations(MethodCall call) async {
     List<dynamic> arguments = call.arguments as List<dynamic>;
     if (call.method == Constants.canceled) {
       // Canceled
@@ -97,6 +97,9 @@ class FlutterPrinceOfVersions {
       // On pending
       final Map<dynamic, dynamic> firstArg = arguments.first;
       _callback.onPending(QueenOfVersionsUpdateData.fromMap(firstArg));
+    } else if (call.method == Constants.requestOptions) {
+      // Request options - iOS only
+      return _callback.requestOptions(arguments.first as String, arguments.last as String);
     }
   }
 }

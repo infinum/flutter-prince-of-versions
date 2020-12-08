@@ -3,9 +3,10 @@ import UIKit
 import PrinceOfVersions
 
 public class FlutterPrinceOfVersionsPlugin: NSObject, FlutterPlugin {
+    static var flutterChannel: FlutterMethodChannel?
     public static func register(with registrar: FlutterPluginRegistrar) {
         let channel = FlutterMethodChannel(name: Constants.Flutter.channelName, binaryMessenger: registrar.messenger())
-
+        flutterChannel = channel
         let instance = FlutterPrinceOfVersionsPlugin()
         registrar.addMethodCallDelegate(instance, channel: channel)
     }
@@ -24,13 +25,9 @@ public class FlutterPrinceOfVersionsPlugin: NSObject, FlutterPlugin {
                             result: result)
         }
         else if (call.method == Constants.Flutter.checkUpdatesFromStoreMethodName) {
-            guard let args = call.arguments as? [Bool],
-                  let trackPhaseRelease = args.first,
-                  let notificationFrequency = args.last
-            else {
-                // handle this better
-                return
-            }
+            let args = call.arguments as? [Bool]
+            let trackPhaseRelease = args?.first ?? false
+            let notificationFrequency = args?.last ?? false
             checkForUpdatesFromAppStore(trackPhaseRelease: trackPhaseRelease,
                                         notificationFrequency: notificationFrequency ? .once : .always,
                                         result: result)
@@ -54,12 +51,22 @@ public class FlutterPrinceOfVersionsPlugin: NSObject, FlutterPlugin {
         httpHeaderFields?.forEach { (key, value) in
             povOptions.set(value: value as NSString, httpHeaderField: key as NSString)
         }
+
         requestOptions?.forEach { (key, value) in
             povOptions.addRequirement(key: key) { (apiValue) -> Bool in
-               guard let apiValue = apiValue as? String,
-                     let value = value as? String
-               else { return false }
-            return value == apiValue
+                let dispatchQueue = DispatchQueue(label: "REQUIREMENT_CHECK")
+                let dispatchGroup  = DispatchGroup()
+                var requirementResult = false
+
+                dispatchQueue.async {
+                    dispatchGroup.enter()
+                    FlutterPrinceOfVersionsPlugin.flutterChannel?.invokeMethod("request_options", arguments: [key, apiValue], result: { (result) in
+                        requirementResult = result as! Bool
+                        dispatchGroup.leave()
+                    })
+                    dispatchGroup.wait(timeout: .distantFuture)
+                }
+                return requirementResult
             }
         }
 

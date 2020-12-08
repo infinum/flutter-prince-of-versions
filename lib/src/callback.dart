@@ -12,4 +12,6 @@ abstract class Callback {
   void updateDeclined(QueenOfVersionsUpdateData queenData, UpdateStatus status, UpdateData updateData);
   void noUpdate(UpdateInfo updateInfo);
   void onPending(QueenOfVersionsUpdateData queenData);
+
+  bool requestOptions(String key, String value);
 }

@@ -36,6 +36,8 @@ class Constants {
   static const noUpdateCallback = "no_update";
   static const onPending = "on_pending";
 
+  static const requestOptions = "request_options";
+
   static const invalidJSONCode = "1";
   static const invalidURLCode = "2";
 

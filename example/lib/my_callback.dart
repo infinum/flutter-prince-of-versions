@@ -77,4 +77,12 @@ class MyCallback extends Callback {
   void updateDeclined(QueenOfVersionsUpdateData queenData, UpdateStatus status, UpdateData updateData) {
     // no-op
   }
+
+  @override
+  bool requestOptions(String key, String value) {
+    if (key == "region") {
+      return value == "hr";
+    }
+    return true;
+  }
 }
