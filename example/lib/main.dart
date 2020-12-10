@@ -36,9 +36,8 @@ class _MyAppState extends State<MyApp> {
               child: Text('Check for updates'),
               onPressed: () async {
                 String url = Platform.isAndroid ? androidUrl : iOSUrl;
-                final Callback c = MyCallback(context);
-                final data = await FlutterPrinceOfVersions(c)
-                    .checkForUpdates(url: url, shouldPinCertificates: false, requestOptions: {"region": "hr"});
+
+                final data = await FlutterPrinceOfVersions.checkForUpdates(url: url, shouldPinCertificates: false);
                 print('Update status: ${data.status.toString()}');
                 print('Current version: ${data.version.major}');
                 print('Last available major version: ${data.updateInfo.lastVersionAvailable.major}');
@@ -47,15 +46,15 @@ class _MyAppState extends State<MyApp> {
           CupertinoButton.filled(
               child: Text('App Store test'),
               onPressed: () async {
-                final data = await FlutterPrinceOfVersions(null)
-                    .checkForUpdatesFromAppStore(trackPhasedRelease: true, notifyOnce: false);
+                final data = await FlutterPrinceOfVersions.checkForUpdatesFromAppStore(
+                    trackPhasedRelease: true, notifyOnce: false);
               }),
           SizedBox(height: 20),
           CupertinoButton.filled(
               child: Text('Play Store test'),
               onPressed: () async {
                 final Callback c = MyCallback(context);
-                await FlutterPrinceOfVersions(c).checkForUpdatesFromGooglePlay("http://pastebin.com/raw/QFGjJrLP");
+                await FlutterPrinceOfVersions.checkForUpdatesFromGooglePlay("http://pastebin.com/raw/QFGjJrLP", c);
               }),
         ],
       ),

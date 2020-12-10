@@ -54,13 +54,12 @@ class FlutterPrinceOfVersionsPlugin : FlutterPlugin, MethodCallHandler, Activity
 
         val loader = NetworkLoader(url)
 
-
         val callback = QueenOfVersions.Callback.Builder()
                 .withOnCanceled {
                     channel.invokeMethod(Constants.CANCELED, null)
                 }
                 .withOnMandatoryUpdateNotAvailable { _, inAppUpdateInfo, _, updateInfo ->
-                    channel.invokeMethod(Constants.MANDATORY_UPDATE_NOT_AVAILABLE, arrayOf(inAppUpdateInfo.toMap(), updateInfo.toMap()))
+                    channel.invokeMethod(Constants.MANDATORY_UPDATE_NOT_AVAILABLE, listOf(inAppUpdateInfo.toMap(), updateInfo.toMap()))
                 }
                 .withOnDownloaded { _, info ->
                     channel.invokeMethod(Constants.DOWNLOADED, info.toMap())
@@ -69,7 +68,7 @@ class FlutterPrinceOfVersionsPlugin : FlutterPlugin, MethodCallHandler, Activity
                     channel.invokeMethod(Constants.DOWNLOADING, info.toMap())
                 }
                 .withOnError {
-                    channel.invokeMethod(Constants.ERROR, null)
+                    channel.invokeMethod(Constants.ERROR, it.localizedMessage)
                 }
                 .withOnInstalled {
                     channel.invokeMethod(Constants.INSTALLED, it.toMap())
