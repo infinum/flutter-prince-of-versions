@@ -37,7 +37,17 @@ class _MyAppState extends State<MyApp> {
               onPressed: () async {
                 String url = Platform.isAndroid ? androidUrl : iOSUrl;
 
-                final data = await FlutterPrinceOfVersions.checkForUpdates(url: url, shouldPinCertificates: false);
+                final data = await FlutterPrinceOfVersions.checkForUpdates(
+                  url: url,
+                  shouldPinCertificates: false,
+                  requestOptions: {
+                    'region': (String region) {
+                      print("checking region");
+                      print(region);
+                      return region == 'hr';
+                    }
+                  },
+                );
                 print('Update status: ${data.status.toString()}');
                 print('Current version: ${data.version.major}');
                 print('Last available major version: ${data.updateInfo.lastVersionAvailable.major}');
@@ -48,6 +58,8 @@ class _MyAppState extends State<MyApp> {
               onPressed: () async {
                 final data = await FlutterPrinceOfVersions.checkForUpdatesFromAppStore(
                     trackPhasedRelease: true, notifyOnce: false);
+                print('Update status: ${data.status.toString()}');
+                print('Current version: ${data.version.major}');
               }),
           SizedBox(height: 20),
           CupertinoButton.filled(
