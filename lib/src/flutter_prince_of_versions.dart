@@ -11,16 +11,21 @@ class FlutterPrinceOfVersions {
   FlutterPrinceOfVersions._();
 
   static MethodChannel _channel = const MethodChannel(Constants.channelName);
+  static MethodChannel _requirementsChannel = const MethodChannel(Constants.requirementsChannelName);
 
   /// Returns parsed JSON data modeled as [UpdateData].
   /// Receives an url to the JSON.
   static Future<UpdateData> checkForUpdates(
       {@required String url,
-      bool shouldPinCertificates,
-      Map<String, String> httpHeaderFields,
-      Map<String, dynamic> requestOptions}) async {
-    final Map<dynamic, dynamic> data = await _channel.invokeMethod(
-        Constants.checkForUpdatesMethodName, [url, shouldPinCertificates, httpHeaderFields, requestOptions]);
+        bool shouldPinCertificates,
+        Map<String, String> httpHeaderFields,
+        Map<String, Function> requestOptions,
+        RequirementCallback callback}) async {
+    if (requestOptions != null) {
+      _requirementsChannel.setMethodCallHandler((call) => _handleRequirementInvocations(call, requestOptions));
+    }
+    final Map<dynamic, dynamic> data = await _channel.invokeMethod(Constants.checkForUpdatesMethodName,
+        [url, shouldPinCertificates, httpHeaderFields, requestOptions.keys.toList()]);
     return UpdateData.fromMap(data);
   }
 
@@ -32,7 +37,7 @@ class FlutterPrinceOfVersions {
       return null;
     }
     final Map<dynamic, dynamic> data =
-        await _channel.invokeMethod(Constants.checkUpdatesFromAppStoreMethodName, [trackPhasedRelease, notifyOnce]);
+    await _channel.invokeMethod(Constants.checkUpdatesFromAppStoreMethodName, [trackPhasedRelease, notifyOnce]);
     return UpdateData.fromMap(data);
   }
 
@@ -81,5 +86,10 @@ class FlutterPrinceOfVersions {
     } else if (call.method == Constants.onPending) {
       callback.onPending(QueenOfVersionsUpdateData.fromMap(call.arguments as Map<dynamic, dynamic>));
     }
+  }
+
+  static Future<bool> _handleRequirementInvocations(MethodCall call, Map<String, Function> options) async {
+    final List<dynamic> arguments = call.arguments as List<dynamic>;
+    return options[arguments.first as String](arguments.last as String);
   }
 }
