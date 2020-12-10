@@ -19,14 +19,13 @@ class FlutterPrinceOfVersions {
       {@required String url,
       bool shouldPinCertificates,
       Map<String, String> httpHeaderFields,
-      Map<String, dynamic> requestOptions,
+      Map<String, Function> requestOptions,
       RequirementCallback callback}) async {
-    if (callback != null && requestOptions != null) {
-      print("added callback");
-      _requirementsChannel.setMethodCallHandler((call) => _handleRequirementInvocations(call, callback));
+    if (requestOptions != null) {
+      _requirementsChannel.setMethodCallHandler((call) => _handleRequirementInvocations(call, requestOptions));
     }
-    final Map<dynamic, dynamic> data = await _channel.invokeMethod(
-        Constants.checkForUpdatesMethodName, [url, shouldPinCertificates, httpHeaderFields, requestOptions]);
+    final Map<dynamic, dynamic> data = await _channel.invokeMethod(Constants.checkForUpdatesMethodName,
+        [url, shouldPinCertificates, httpHeaderFields, requestOptions.keys.toList()]);
     return UpdateData.fromMap(data);
   }
 
@@ -89,10 +88,8 @@ class FlutterPrinceOfVersions {
     }
   }
 
-  static Future<bool> _handleRequirementInvocations(MethodCall call, RequirementCallback callback) async {
-    print("callback triggered");
-
+  static Future<bool> _handleRequirementInvocations(MethodCall call, Map<String, Function> options) async {
     final List<dynamic> arguments = call.arguments as List<dynamic>;
-    return callback.requestOptions(arguments.first as String, arguments.last as String);
+    return options[arguments.first as String](arguments.last as String);
   }
 }

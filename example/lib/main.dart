@@ -39,7 +39,16 @@ class _MyAppState extends State<MyApp> {
 
                 final RequirementCallback callback = MyRequirementCallback();
                 final data = await FlutterPrinceOfVersions.checkForUpdates(
-                    url: url, shouldPinCertificates: false, requestOptions: {"region": "hr"}, callback: callback);
+                    url: url,
+                    shouldPinCertificates: false,
+                    requestOptions: {
+                      'region': (String region) {
+                        print("checking region");
+                        print(region);
+                        return region == 'hr';
+                      }
+                    },
+                    callback: callback);
                 print('Update status: ${data.status.toString()}');
                 print('Current version: ${data.version.major}');
                 print('Last available major version: ${data.updateInfo.lastVersionAvailable.major}');

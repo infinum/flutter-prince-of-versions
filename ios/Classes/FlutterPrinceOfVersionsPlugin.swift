@@ -18,7 +18,7 @@ public class FlutterPrinceOfVersionsPlugin: NSObject, FlutterPlugin {
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
         if (call.method == Constants.Flutter.checkForUpdatesMethodName) {
             let args = call.arguments as? [Any]
-            let requestOptions = args?.last as? [String: Any]
+            let requestOptions = args?.last as? [String]
             let shouldPinCertificates = args?[1] as? Bool
             let httpHeaderFields = args?[2] as? [String: String]
             let url = args?.first as? String
@@ -39,7 +39,7 @@ public class FlutterPrinceOfVersionsPlugin: NSObject, FlutterPlugin {
 
     }
 
-    func checkForUpdates(url: String?, shouldPinCertificates: Bool?, httpHeaderFields: [String: String]?, requestOptions: [String: Any]?, result: @escaping FlutterResult) {
+    func checkForUpdates(url: String?, shouldPinCertificates: Bool?, httpHeaderFields: [String: String]?, requestOptions: [String]?, result: @escaping FlutterResult) {
         guard let apiUrl = url,
               let povUrl = URL(string: apiUrl)
         else {
@@ -56,7 +56,7 @@ public class FlutterPrinceOfVersionsPlugin: NSObject, FlutterPlugin {
             povOptions.set(value: value as NSString, httpHeaderField: key as NSString)
         }
 
-        requestOptions?.forEach { (key, _) in
+        requestOptions?.forEach { (key) in
             povOptions.addRequirement(key: key) { (apiValue) -> Bool in
                 var requirementResult = false
 
