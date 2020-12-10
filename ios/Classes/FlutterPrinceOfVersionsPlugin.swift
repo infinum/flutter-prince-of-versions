@@ -4,9 +4,13 @@ import PrinceOfVersions
 
 public class FlutterPrinceOfVersionsPlugin: NSObject, FlutterPlugin {
     static var flutterChannel: FlutterMethodChannel?
+
+    let dispatchQueue = DispatchQueue(label: Constants.requirementCheck)
+    let dispatchGroup = DispatchGroup()
+
     public static func register(with registrar: FlutterPluginRegistrar) {
         let channel = FlutterMethodChannel(name: Constants.Flutter.channelName, binaryMessenger: registrar.messenger())
-        flutterChannel = channel
+        flutterChannel = FlutterMethodChannel(name: Constants.Flutter.requirementsChannelName, binaryMessenger: registrar.messenger())
         let instance = FlutterPrinceOfVersionsPlugin()
         registrar.addMethodCallDelegate(instance, channel: channel)
     }
@@ -52,20 +56,19 @@ public class FlutterPrinceOfVersionsPlugin: NSObject, FlutterPlugin {
             povOptions.set(value: value as NSString, httpHeaderField: key as NSString)
         }
 
-        requestOptions?.forEach { (key, value) in
+        requestOptions?.forEach { (key, _) in
             povOptions.addRequirement(key: key) { (apiValue) -> Bool in
-                let dispatchQueue = DispatchQueue(label: "REQUIREMENT_CHECK")
-                let dispatchGroup  = DispatchGroup()
                 var requirementResult = false
 
-                dispatchQueue.async {
-                    dispatchGroup.enter()
-                    FlutterPrinceOfVersionsPlugin.flutterChannel?.invokeMethod("request_options", arguments: [key, apiValue], result: { (result) in
+                self.dispatchQueue.async {
+                    self.dispatchGroup.enter()
+                    FlutterPrinceOfVersionsPlugin.flutterChannel?.invokeMethod(Constants.Flutter.requirementsMethodName, arguments: [key, apiValue], result: { (result) in
                         requirementResult = result as! Bool
-                        dispatchGroup.leave()
+                        self.dispatchGroup.leave()
                     })
-                    dispatchGroup.wait(timeout: .distantFuture)
+                    self.dispatchGroup.wait(timeout: .distantFuture)
                 }
+
                 return requirementResult
             }
         }
@@ -96,7 +99,10 @@ public class FlutterPrinceOfVersionsPlugin: NSObject, FlutterPlugin {
                 let data = AppStoreUpdateData(status: appStoreResult.updateState,
                                               version: appStoreResult.updateVersion,
                                               updateInfo: appStoreResult.updateInfo)
-                result(data.toMap())
+                do {
+                    result(try data.asDictionary())
+                } catch {}
+
             case .failure(let error):
                 // handle error better
                 result(FlutterError(code: Constants.Error.invalidJSONCode,
@@ -109,7 +115,7 @@ public class FlutterPrinceOfVersionsPlugin: NSObject, FlutterPlugin {
 
 }
 
-class AppStoreUpdateData {
+struct AppStoreUpdateData: Encodable {
 
     let status: UpdateStatus
     let version: Version
@@ -121,11 +127,26 @@ class AppStoreUpdateData {
         self.appStoreUpdateInfo = updateInfo
     }
 
-    func toMap() -> [String: Any] {
-        return [Constants.UpdateData.status: status.toString(),
-                Constants.UpdateData.version: version.toMap(),
-                Constants.UpdateData.updateInfo: appStoreUpdateInfo.toMap()]
+    enum CodingKeys: String, CodingKey {
+           case status
+           case version
+           case appStoreUpdateInfo
     }
+
+    func encode(to encoder: Encoder) throws {
+            var container = encoder.container(keyedBy: CodingKeys.self)
+            try container.encode(status.toString(), forKey: .status)
+            try container.encode(appStoreUpdateInfo, forKey: .appStoreUpdateInfo)
+            try container.encode(version, forKey: .version)
+    }
+
+    func asDictionary() throws -> [String: Any] {
+        let data = try JSONEncoder().encode(self)
+        guard let dictionary = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String: Any] else {
+          throw NSError()
+        }
+        return dictionary
+      }
 }
 
 class UpdateData {

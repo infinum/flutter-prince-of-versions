@@ -11,6 +11,7 @@ class FlutterPrinceOfVersions {
   FlutterPrinceOfVersions._();
 
   static MethodChannel _channel = const MethodChannel(Constants.channelName);
+  static MethodChannel _requirementsChannel = const MethodChannel(Constants.requirementsChannelName);
 
   /// Returns parsed JSON data modeled as [UpdateData].
   /// Receives an url to the JSON.
@@ -18,7 +19,12 @@ class FlutterPrinceOfVersions {
       {@required String url,
       bool shouldPinCertificates,
       Map<String, String> httpHeaderFields,
-      Map<String, dynamic> requestOptions}) async {
+      Map<String, dynamic> requestOptions,
+      RequirementCallback callback}) async {
+    if (callback != null && requestOptions != null) {
+      print("added callback");
+      _requirementsChannel.setMethodCallHandler((call) => _handleRequirementInvocations(call, callback));
+    }
     final Map<dynamic, dynamic> data = await _channel.invokeMethod(
         Constants.checkForUpdatesMethodName, [url, shouldPinCertificates, httpHeaderFields, requestOptions]);
     return UpdateData.fromMap(data);
@@ -81,5 +87,12 @@ class FlutterPrinceOfVersions {
     } else if (call.method == Constants.onPending) {
       callback.onPending(QueenOfVersionsUpdateData.fromMap(call.arguments as Map<dynamic, dynamic>));
     }
+  }
+
+  static Future<bool> _handleRequirementInvocations(MethodCall call, RequirementCallback callback) async {
+    print("callback triggered");
+
+    final List<dynamic> arguments = call.arguments as List<dynamic>;
+    return callback.requestOptions(arguments.first as String, arguments.last as String);
   }
 }

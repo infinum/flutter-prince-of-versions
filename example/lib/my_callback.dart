@@ -28,3 +28,17 @@ class MyCallback extends Callback {
     );
   }
 }
+
+class MyRequirementCallback extends RequirementCallback {
+  @override
+  bool requestOptions(String key, String value) {
+    print("inn request options");
+
+    if (key == "region") {
+      print("in region");
+      return value == "hr";
+    } else {
+      return false;
+    }
+  }
+}

@@ -2,6 +2,8 @@ import Foundation
 
 enum Constants {
 
+    static let requirementCheck = "REQUIREMENT_CHECK"
+    
     enum UpdateStatus {
         static let updateAvailable = "update-available"
         static let noUpdate = "no-update"
@@ -36,6 +38,8 @@ enum Constants {
 
     enum Flutter {
         static let channelName = "flutter_prince_of_versions"
+        static let requirementsChannelName = "flutter_prince_of_versions_requirements"
+        static let requirementsMethodName = "request_options"
         static let checkForUpdatesMethodName = "check_for_updates"
         static let checkUpdatesFromStoreMethodName = "check_updates_from_app_store"
     }
