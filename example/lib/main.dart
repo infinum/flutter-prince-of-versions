@@ -63,7 +63,7 @@ class _MyAppState extends State<MyApp> {
           CupertinoButton.filled(
               child: Text('Play Store test'),
               onPressed: () async {
-                final Callback c = MyCallback(context);
+                final callback = MyCallback(context);
                 await FlutterPrinceOfVersions.checkForUpdatesFromGooglePlay("http://pastebin.com/raw/QFGjJrLP", c);
               }),
         ],
