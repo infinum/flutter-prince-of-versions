@@ -12,30 +12,21 @@ It uses:
 Use this library when you want to check if the new version of your application is available and do something with that
 information (prompt user to update the application).
 
-### Check if an update is available
-
-```dart
- if (!await FlutterPrinceOfVersions.isUpdateAvailable('https://pastebin.com/raw/0MfYmWGu')) {
-    return;
- }
- showAlert("New available", "A new update for your app is available.");
-```
-
-### Check for mandatory update
-```dart
- if (!await FlutterPrinceOfVersions.isMandatoryUpdateAvailable(url)) {
-    return;
- }
- showAlert("Mandatory update available", "A mandatory update for your app is available.");
-```
-
 ### Getting all the remote data
 
 ```dart
- final data = await FlutterPrinceOfVersions.checkForUpdates(url);
- print('Update status: ${data.status.toString()}');
- print('Current version: ${data.version.major}');
- print('Last available major version: ${data.updateInfo.lastVersionAvailable.major}');
+final data = await FlutterPrinceOfVersions.checkForUpdates(
+  url: url,
+  shouldPinCertificates: false,
+  requestOptions: {
+    'region': (String region) {
+      return region == 'hr';
+    }
+  },
+);
+print('Update status: ${data.status.toString()}');
+print('Current version: ${data.version.major}');
+print('Last available major version: ${data.updateInfo.lastVersionAvailable.major}');
 ```
 
 With fetching all the remote data, you have the flexiblity of creating a custom flow regarding the updates.
@@ -51,9 +42,44 @@ It is not possible to check if update is mandatory by using this method and data
 
 ### Automatic check with data from Google Play
 
-For checking updates on Google Play use `checkForUpdatesFromGooglePlay`. This method will automatically check Play Store
-and prompt user about a new version.
-TODO: Explaing more, come back when implemented and tested.
+For checking updates on Google Play use `checkForUpdatesFromGooglePlay`. This method will automatically check Google Store
+and prompt user about a new version. Whenever a status of the update is changed, your callback methods will be triggered.
+
+```dart
+final Callback callback = MyCallback(context);
+await FlutterPrinceOfVersions.checkForUpdatesFromGooglePlay(callback);
+```
+
+```dart
+class MyCallback extends Callback {
+  MyCallback(BuildContext context) {
+    _context = context;
+  }
+  BuildContext _context;
+
+  @override
+  void error(String localizedMessage) {
+    showDialog<bool>(
+      context: _context,
+      builder: (BuildContext context) {
+        return CupertinoAlertDialog(
+          title: Text('An error occurred'),
+          content: Text('$localizedMessage'),
+          actions: <Widget>[
+            CupertinoDialogAction(
+              child: Text('Ok'),
+              isDestructiveAction: false,
+              onPressed: () => Navigator.pop(context, true),
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
+```
+
+In this example, we created a class and implemented an error method. When `checkForUpdatesFromGooglePlay` triggers an error method, an alert dialog will show.
 
 ## JSON file formatting
 

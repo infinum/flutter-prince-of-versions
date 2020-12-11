@@ -3,10 +3,9 @@ part of flutter_prince_of_versions;
 /// Library for checking if an update is available for your application.
 /// [FlutterPrinceOfVersions] parses a JSON response stored on server and returns the result.
 /// There are three possible results: [UpdateStatus.noUpdateAvailable], [UpdateStatus.requiredUpdateNeeded] and
-/// [UpdateStatus.newUpdateAvailable]. No update means there is not any available update for your application.
-/// Required update means that and update is available and that the user must download and install it before using the app.
-/// If the result is New update then user should be notified that he can install a new version of the application.
-/// Additionally, you can create a custom flow using [checkForUpdates] method which will return parsed JSON data.
+/// [UpdateStatus.newUpdateAvailable]. [UpdateStatus.noUpdateAvailable] means there is not any available update for your application.
+/// [UpdateStatus.requiredUpdateNeeded] means that and update is available and that the user must download and install it before using the app.
+/// If the result is [UpdateStatus.newUpdateAvailable] then user should be notified that he can install a new version of the application.
 class FlutterPrinceOfVersions {
   FlutterPrinceOfVersions._();
 
@@ -14,7 +13,12 @@ class FlutterPrinceOfVersions {
   static MethodChannel _requirementsChannel = const MethodChannel(Constants.requirementsChannelName);
 
   /// Returns parsed JSON data modeled as [UpdateData].
-  /// Receives an url to the JSON.
+  /// [url] to the JSON.
+  /// [shouldPinCertificates] - iOS only. Indicates whether PoV should use security keys from all certificates found in the main bundle. Default is false.
+  /// [httpHeaderFields] - iOS only. Http header fields.
+  /// [requestOptions] - Adds requirement check for configuration. Map key that matches key in requirements array in JSON with requirementsCheck parameter.
+  /// Map value for key is a method that will be called when checking if the value of requirement is valid. This method is expected to return a bool.
+  /// If the method does not return a bool, whole requirement will be false.
   static Future<UpdateData> checkForUpdates(
       {@required String url,
       bool shouldPinCertificates,

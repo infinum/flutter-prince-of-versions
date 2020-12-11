@@ -73,8 +73,13 @@ class Version {
 /// Can be used in custom flows. For example:
 /// If UpdateInfo.lastAvailableVersion.major > 2 don't do anything.
 class UpdateData {
+  /// Application [UpdateStatus]
   UpdateStatus status;
+
+  /// Application [Version]
   Version version;
+
+  /// Application [UpdateInfo]
   UpdateInfo updateInfo;
 
   static UpdateData fromMap(Map<dynamic, dynamic> map) {
@@ -86,9 +91,15 @@ class UpdateData {
   }
 }
 
+/// Data about the application form Google Store.
 class QueenOfVersionsUpdateData {
+  /// Application version code.
   int versionCode;
+
+  /// Application update priority.
   int updatePriority;
+
+  /// Number of days since the last application version was uploaded to the Store.
   int clientVersionStalenessDays;
 
   static QueenOfVersionsUpdateData fromMap(Map<dynamic, dynamic> map) {
