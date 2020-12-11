@@ -37,18 +37,15 @@ class _MyAppState extends State<MyApp> {
               onPressed: () async {
                 String url = Platform.isAndroid ? androidUrl : iOSUrl;
 
-                final RequirementCallback callback = MyRequirementCallback();
                 final data = await FlutterPrinceOfVersions.checkForUpdates(
-                    url: url,
-                    shouldPinCertificates: false,
-                    requestOptions: {
-                      'region': (String region) {
-                        print("checking region");
-                        print(region);
-                        return region == 'hr';
-                      }
-                    },
-                    callback: callback);
+                  url: url,
+                  shouldPinCertificates: false,
+                  requestOptions: {
+                    'region': (String region) {
+                      return region == 'hr';
+                    }
+                  },
+                );
                 print('Update status: ${data.status.toString()}');
                 print('Current version: ${data.version.major}');
                 print('Last available major version: ${data.updateInfo.lastVersionAvailable.major}');

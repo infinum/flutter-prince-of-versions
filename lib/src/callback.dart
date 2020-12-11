@@ -13,7 +13,3 @@ abstract class Callback {
   void noUpdate(UpdateInfo updateInfo) {}
   void onPending(QueenOfVersionsUpdateData queenData) {}
 }
-
-abstract class RequirementCallback {
-  bool requestOptions(String key, String value);
-}

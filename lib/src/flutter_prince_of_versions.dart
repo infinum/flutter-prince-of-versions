@@ -19,8 +19,7 @@ class FlutterPrinceOfVersions {
       {@required String url,
       bool shouldPinCertificates,
       Map<String, String> httpHeaderFields,
-      Map<String, Function> requestOptions,
-      RequirementCallback callback}) async {
+      Map<String, Function> requestOptions}) async {
     if (requestOptions != null) {
       _requirementsChannel.setMethodCallHandler((call) => _handleRequirementInvocations(call, requestOptions));
     }

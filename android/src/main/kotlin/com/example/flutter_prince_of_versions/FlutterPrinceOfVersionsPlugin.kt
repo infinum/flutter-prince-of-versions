@@ -19,6 +19,8 @@ import io.flutter.plugin.common.MethodChannel.Result
 class FlutterPrinceOfVersionsPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
 
     private lateinit var channel: MethodChannel
+    private lateinit var requirementsChannel: MethodChannel
+
     private lateinit var context: Context
     private lateinit var activity: Activity
 
@@ -29,6 +31,10 @@ class FlutterPrinceOfVersionsPlugin : FlutterPlugin, MethodCallHandler, Activity
                 flutterPluginBinding.getFlutterEngine().dartExecutor,
                 Constants.CHANNEL_NAME
         )
+        requirementsChannel = MethodChannel(
+                flutterPluginBinding.getFlutterEngine().dartExecutor,
+                Constants.REQUIREMENTS_CHANNEL_NAME
+        )
 
         channel.setMethodCallHandler(this)
     }
@@ -38,7 +44,7 @@ class FlutterPrinceOfVersionsPlugin : FlutterPlugin, MethodCallHandler, Activity
             Constants.CHECK_FOR_UPDATES_METHOD_NAME -> {
                 val argsList = call.arguments as List<*>
                 val url = argsList.first() as String
-                val requirements = argsList.last() as Map<String, String>
+                val requirements = argsList.last() as List<String>
                 checkForUpdates(url, requirements, result)
             }
             Constants.CHECK_UPDATES_FROM_PLAY_STORE_METHOD_NAME -> {
@@ -94,9 +100,25 @@ class FlutterPrinceOfVersionsPlugin : FlutterPlugin, MethodCallHandler, Activity
 
     }
 
-    private fun checkForUpdates(url: String, requirements: Map<String, String>, @NonNull flutterResult: Result) {
+    private fun checkForUpdates(url: String, requirements: List<String>, @NonNull flutterResult: Result) {
         val updater = PrinceOfVersions.Builder()
-        requirements.forEach { updater.addRequirementsChecker(it.key) { value ->  it.value == value } }
+
+        requirements.forEach {
+            updater.addRequirementsChecker(it) {  value ->
+            var requirementResult = false
+
+            requirementsChannel.invokeMethod(Constants.REQUIREMENTS_METHOD_NAME, listOf(it, value), object: Result {
+                override fun success(result: Any?) {
+                    requirementResult = result as Boolean
+                }
+
+                override fun error(errorCode: String?, errorMessage: String?, errorDetails: Any?) {}
+                override fun notImplemented() {}
+
+            })
+            requirementResult
+            }
+        }
         val loader: Loader = NetworkLoader(url)
         val callback: UpdaterCallback = object : UpdaterCallback {
             override fun onSuccess(result: UpdateResult) {
@@ -127,12 +149,15 @@ class FlutterPrinceOfVersionsPlugin : FlutterPlugin, MethodCallHandler, Activity
     override fun onDetachedFromEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
         channel.setMethodCallHandler(null)
     }
+
 }
+
+
 
 fun QueenOfVersionsInAppUpdateInfo.toMap(): Map<String, Int?> {
     return mapOf(Constants.VERSION_CODE to versionCode(),
-                Constants.UPDATE_PRIORITY to updatePriority(),
-                Constants.CLIENT_VERSION_STALENESS_DAYS to clientVersionStalenessDays()
+            Constants.UPDATE_PRIORITY to updatePriority(),
+            Constants.CLIENT_VERSION_STALENESS_DAYS to clientVersionStalenessDays()
     )
 }
 
