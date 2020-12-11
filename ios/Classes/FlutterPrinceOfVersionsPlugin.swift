@@ -62,7 +62,9 @@ public class FlutterPrinceOfVersionsPlugin: NSObject, FlutterPlugin {
 
                 self.dispatchQueue.async {
                     self.dispatchGroup.enter()
-                    FlutterPrinceOfVersionsPlugin.flutterChannel?.invokeMethod(Constants.Flutter.requirementsMethodName, arguments: [key, apiValue], result: { (result) in
+                    FlutterPrinceOfVersionsPlugin.flutterChannel?.invokeMethod(Constants.Flutter.requirementsMethodName,
+                                                                               arguments: [key, apiValue],
+                                                                               result: { (result) in
                         if let newResult = result as? Bool  {
                             requirementResult = newResult
                         }
@@ -82,9 +84,9 @@ public class FlutterPrinceOfVersionsPlugin: NSObject, FlutterPlugin {
                                       version: updateResultData.updateVersion,
                                       updateInfo: updateResultData.updateInfo)
                 result(data.toMap())
-            case .failure:
-                result(FlutterError(code: Constants.Error.invalidJSONCode,
-                                    message: Constants.Error.invalidJSONMessage,
+            case .failure(let error):
+                result(FlutterError(code: "",
+                                    message: error.localizedDescription,
                                     details: nil)
                 )
             }
@@ -106,9 +108,8 @@ public class FlutterPrinceOfVersionsPlugin: NSObject, FlutterPlugin {
                 } catch {}
 
             case .failure(let error):
-                // handle error better
-                result(FlutterError(code: Constants.Error.invalidJSONCode,
-                                    message: Constants.Error.invalidJSONMessage,
+                result(FlutterError(code: "",
+                                    message: error.localizedDescription,
                                     details: nil)
                 )
             }

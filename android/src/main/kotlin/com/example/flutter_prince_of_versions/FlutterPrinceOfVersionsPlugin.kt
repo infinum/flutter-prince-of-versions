@@ -123,7 +123,7 @@ class FlutterPrinceOfVersionsPlugin : FlutterPlugin, MethodCallHandler, Activity
                 flutterResult.success(result.toMap())
             }
             override fun onError(throwable: Throwable) {
-                flutterResult.error("1", throwable.message, null)
+                flutterResult.error("", throwable.localizedMessage, null)
             }
         }
         updater.build(context).checkForUpdates(loader, callback)

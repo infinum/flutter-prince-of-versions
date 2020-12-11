@@ -19,6 +19,7 @@ class FlutterPrinceOfVersions {
   /// [requestOptions] - Adds requirement check for configuration. Map key that matches key in requirements array in JSON with requirementsCheck parameter.
   /// Map value for key is a method that will be called when checking if the value of requirement is valid. This method is expected to return a bool.
   /// If the method does not return a bool, whole requirement will be false.
+  /// This method will throw an error if it does not manage to fetch JSON data.
   static Future<UpdateData> checkForUpdates(
       {@required String url,
       bool shouldPinCertificates,
@@ -36,6 +37,8 @@ class FlutterPrinceOfVersions {
   /// Uses your applications Bundle ID to fetch data from App Store.
   /// [notifyOnce] - determines if the app should be notified only once of the update status or always. Default setting is false.
   /// [trackPhasedRelease] - bool that indicates whether PoV should notify about new version after 7 days when app is fully rolled out or immediately. Default value is true.
+  /// This method will throw an error if it does not manage to fetch JSON data.
+  /// This method will return null as a result if called on Android platform.
   static Future<UpdateData> checkForUpdatesFromAppStore(
       {bool trackPhasedRelease = true, bool notifyOnce = false}) async {
     if (Platform.isAndroid) {
@@ -49,6 +52,7 @@ class FlutterPrinceOfVersions {
   /// Checks Google Store data for your application. If your application is not on Google Store, error method in callback is triggered.
   /// Brings native Android update alert. Depending on different update states, different callback methods are triggered.
   /// [callback] - your implementation of possible update states
+  /// If this method is called on iOS, nothing will happen.
   static Future<void> checkForUpdatesFromGooglePlay(Callback callback) async {
     if (Platform.isIOS) {
       return;
