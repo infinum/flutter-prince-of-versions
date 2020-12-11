@@ -8,7 +8,7 @@ enum UpdateStatus {
 }
 
 extension Status on UpdateStatus {
-  static UpdateStatus _fromMap(dynamic status) {
+  static UpdateStatus fromMap(dynamic status) {
     final String currentStatus = status as String;
     switch (currentStatus) {
       case Constants.updateAvailable:
@@ -33,14 +33,14 @@ class UpdateInfo {
   /// Minimum required version.
   Version requiredVersion;
 
-  static UpdateInfo _fromMap(Map<dynamic, dynamic> map) {
+  static UpdateInfo fromMap(Map<dynamic, dynamic> map) {
     final UpdateInfo updateInfo = UpdateInfo();
     updateInfo.lastVersionAvailable =
-        map[Constants.lastVersionAvailable] != null ? Version._fromMap(map[Constants.lastVersionAvailable]) : null;
+        map[Constants.lastVersionAvailable] != null ? Version.fromMap(map[Constants.lastVersionAvailable]) : null;
     updateInfo.installedVersion =
-        map[Constants.installedVersion] != null ? Version._fromMap(map[Constants.installedVersion]) : null;
+        map[Constants.installedVersion] != null ? Version.fromMap(map[Constants.installedVersion]) : null;
     updateInfo.requiredVersion =
-        map[Constants.requiredVersion] != null ? Version._fromMap(map[Constants.requiredVersion]) : null;
+        map[Constants.requiredVersion] != null ? Version.fromMap(map[Constants.requiredVersion]) : null;
     return updateInfo;
   }
 }
@@ -59,7 +59,7 @@ class Version {
   /// App build version number. iOS only.
   int build;
 
-  static Version _fromMap(Map<dynamic, dynamic> map) {
+  static Version fromMap(Map<dynamic, dynamic> map) {
     final Version version = Version();
     version.major = map[Constants.major];
     version.minor = map[Constants.minor];
@@ -79,9 +79,24 @@ class UpdateData {
 
   static UpdateData fromMap(Map<dynamic, dynamic> map) {
     final UpdateData data = UpdateData();
-    data.status = map[Constants.status] != null ? Status._fromMap(map[Constants.status]) : null;
-    data.version = map[Constants.version] != null ? Version._fromMap(map[Constants.version]) : null;
-    data.updateInfo = map[Constants.updateInfo] != null ? UpdateInfo._fromMap(map[Constants.updateInfo]) : null;
+    data.status = map[Constants.status] != null ? Status.fromMap(map[Constants.status]) : null;
+    data.version = map[Constants.version] != null ? Version.fromMap(map[Constants.version]) : null;
+    data.updateInfo = map[Constants.updateInfo] != null ? UpdateInfo.fromMap(map[Constants.updateInfo]) : null;
+    return data;
+  }
+}
+
+class QueenOfVersionsUpdateData {
+  int versionCode;
+  int updatePriority;
+  int clientVersionStalenessDays;
+
+  static QueenOfVersionsUpdateData fromMap(Map<dynamic, dynamic> map) {
+    final QueenOfVersionsUpdateData data = QueenOfVersionsUpdateData();
+    data.clientVersionStalenessDays =
+        map[Constants.clientVersionStalenessDays] != null ? map[Constants.clientVersionStalenessDays] : null;
+    data.updatePriority = map[Constants.updatePriority] != null ? map[Constants.updatePriority] : null;
+    data.versionCode = map[Constants.versionCode] != null ? map[Constants.versionCode] : null;
     return data;
   }
 }
