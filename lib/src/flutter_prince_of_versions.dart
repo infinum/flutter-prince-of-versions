@@ -21,6 +21,7 @@ class FlutterPrinceOfVersions {
       Map<String, String> httpHeaderFields,
       Map<String, Function> requestOptions}) async {
     if (requestOptions != null) {
+      print("adding");
       _requirementsChannel.setMethodCallHandler((call) => _handleRequirementInvocations(call, requestOptions));
     }
     final Map<dynamic, dynamic> data = await _channel.invokeMethod(Constants.checkForUpdatesMethodName,
