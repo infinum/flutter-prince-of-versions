@@ -36,9 +36,6 @@ class Constants {
   static const noUpdateCallback = "no_update";
   static const onPending = "on_pending";
 
-  static const invalidJSONCode = "1";
-  static const invalidURLCode = "2";
-
   static const channelName = "flutter_prince_of_versions";
   static const requirementsChannelName = "flutter_prince_of_versions_requirements";
   static const checkForUpdatesMethodName = "check_for_updates";

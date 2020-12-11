@@ -50,15 +50,17 @@ class FlutterPrinceOfVersionsPlugin : FlutterPlugin, MethodCallHandler, Activity
                 checkForUpdates(url, requirements, result)
             }
             Constants.CHECK_UPDATES_FROM_PLAY_STORE_METHOD_NAME -> {
-                checkForUpdatesFromPlayStore()
+                val argsList = call.arguments as List<*>
+                val url = argsList.first() as String
+                checkForUpdatesFromPlayStore(url)
             }
         }
     }
-    private fun checkForUpdatesFromPlayStore() {
+    private fun checkForUpdatesFromPlayStore(url: String) {
         val queenOfVersions = QueenOfVersions.Builder()
                 .build(this.activity as FragmentActivity)
 
-        val loader = NetworkLoader("")
+        val loader = NetworkLoader(url)
 
         val callback = QueenOfVersions.Callback.Builder()
                 .withOnCanceled {

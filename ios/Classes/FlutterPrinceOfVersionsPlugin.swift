@@ -22,19 +22,23 @@ public class FlutterPrinceOfVersionsPlugin: NSObject, FlutterPlugin {
             let shouldPinCertificates = args?[1] as? Bool
             let httpHeaderFields = args?[2] as? [String: String]
             let url = args?.first as? String
-            checkForUpdates(url: url,
-                            shouldPinCertificates: shouldPinCertificates,
-                            httpHeaderFields: httpHeaderFields,
-                            requestOptions: requestOptions,
-                            result: result)
+            checkForUpdates(
+                url: url,
+                shouldPinCertificates: shouldPinCertificates,
+                httpHeaderFields: httpHeaderFields,
+                requestOptions: requestOptions,
+                result: result
+            )
         }
         else if (call.method == Constants.Flutter.checkUpdatesFromStoreMethodName) {
             let args = call.arguments as? [Bool]
             let trackPhaseRelease = args?.first ?? false
             let notificationFrequency = args?.last ?? false
-            checkForUpdatesFromAppStore(trackPhaseRelease: trackPhaseRelease,
-                                        notificationFrequency: notificationFrequency ? .once : .always,
-                                        result: result)
+            checkForUpdatesFromAppStore(
+                trackPhaseRelease: trackPhaseRelease,
+                notificationFrequency: notificationFrequency ? .once : .always,
+                result: result
+            )
         }
 
     }
@@ -80,9 +84,9 @@ public class FlutterPrinceOfVersionsPlugin: NSObject, FlutterPlugin {
                                       version: updateResultData.updateVersion,
                                       updateInfo: updateResultData.updateInfo)
                 result(data.toMap())
-            case .failure:
-                result(FlutterError(code: Constants.Error.invalidJSONCode,
-                                    message: Constants.Error.invalidJSONMessage,
+            case .failure(let error):
+                result(FlutterError(code: "",
+                                    message: error.localizedDescription,
                                     details: nil)
                 )
             }
@@ -101,12 +105,16 @@ public class FlutterPrinceOfVersionsPlugin: NSObject, FlutterPlugin {
                                               updateInfo: appStoreResult.updateInfo)
                 do {
                     result(try data.asDictionary())
-                } catch {}
+                } catch {
+                    result(FlutterError(code: "",
+                                        message: Constants.Error.dataParseError,
+                                        details: nil)
+                    )
+                }
 
             case .failure(let error):
-                // handle error better
-                result(FlutterError(code: Constants.Error.invalidJSONCode,
-                                    message: Constants.Error.invalidJSONMessage,
+                result(FlutterError(code: "",
+                                    message: error.localizedDescription,
                                     details: nil)
                 )
             }
