@@ -42,8 +42,6 @@ class _MyAppState extends State<MyApp> {
                   shouldPinCertificates: false,
                   requestOptions: {
                     'region': (String region) {
-                      print("checking region");
-                      print(region);
                       return region == 'hr';
                     }
                   },

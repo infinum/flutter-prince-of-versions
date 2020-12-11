@@ -33,7 +33,7 @@ class FlutterPrinceOfVersionsPlugin : FlutterPlugin, MethodCallHandler, Activity
         )
         requirementsChannel = MethodChannel(
                 flutterPluginBinding.getFlutterEngine().dartExecutor,
-                Constants.CHANNEL_NAME
+                Constants.REQUIREMENTS_CHANNEL_NAME
         )
 
         channel.setMethodCallHandler(this)
@@ -102,21 +102,21 @@ class FlutterPrinceOfVersionsPlugin : FlutterPlugin, MethodCallHandler, Activity
 
     private fun checkForUpdates(url: String, requirements: List<String>, @NonNull flutterResult: Result) {
         val updater = PrinceOfVersions.Builder()
-        requirements.forEach { updater.addRequirementsChecker(it) {  value ->
+
+        requirements.forEach {
+            updater.addRequirementsChecker(it) {  value ->
+            var requirementResult = false
+
             requirementsChannel.invokeMethod(Constants.REQUIREMENTS_METHOD_NAME, listOf(it, value), object: Result {
                 override fun success(result: Any?) {
-                    println("hereeee")
+                    requirementResult = result as Boolean
                 }
 
-                override fun error(errorCode: String?, errorMessage: String?, errorDetails: Any?) {
-                    println("rip eerror")
-                }
+                override fun error(errorCode: String?, errorMessage: String?, errorDetails: Any?) {}
+                override fun notImplemented() {}
 
-                override fun notImplemented() {
-                    println("43563423")
-                }
             })
-            value == it
+            requirementResult
             }
         }
         val loader: Loader = NetworkLoader(url)
@@ -149,7 +149,10 @@ class FlutterPrinceOfVersionsPlugin : FlutterPlugin, MethodCallHandler, Activity
     override fun onDetachedFromEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
         channel.setMethodCallHandler(null)
     }
+
 }
+
+
 
 fun QueenOfVersionsInAppUpdateInfo.toMap(): Map<String, Int?> {
     return mapOf(Constants.VERSION_CODE to versionCode(),

@@ -17,11 +17,10 @@ class FlutterPrinceOfVersions {
   /// Receives an url to the JSON.
   static Future<UpdateData> checkForUpdates(
       {@required String url,
-        bool shouldPinCertificates,
-        Map<String, String> httpHeaderFields,
-        Map<String, Function> requestOptions}) async {
+      bool shouldPinCertificates,
+      Map<String, String> httpHeaderFields,
+      Map<String, Function> requestOptions}) async {
     if (requestOptions != null) {
-      print("adding callback");
       _requirementsChannel.setMethodCallHandler((call) => _handleRequirementInvocations(call, requestOptions));
     }
     final Map<dynamic, dynamic> data = await _channel.invokeMethod(Constants.checkForUpdatesMethodName,
@@ -37,7 +36,7 @@ class FlutterPrinceOfVersions {
       return null;
     }
     final Map<dynamic, dynamic> data =
-    await _channel.invokeMethod(Constants.checkUpdatesFromAppStoreMethodName, [trackPhasedRelease, notifyOnce]);
+        await _channel.invokeMethod(Constants.checkUpdatesFromAppStoreMethodName, [trackPhasedRelease, notifyOnce]);
     return UpdateData.fromMap(data);
   }
 
@@ -89,7 +88,6 @@ class FlutterPrinceOfVersions {
   }
 
   static Future<bool> _handleRequirementInvocations(MethodCall call, Map<String, Function> options) async {
-    print("in callback on flutter");
     final List<dynamic> arguments = call.arguments as List<dynamic>;
     return options[arguments.first as String](arguments.last as String);
   }
