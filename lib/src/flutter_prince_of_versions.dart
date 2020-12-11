@@ -28,8 +28,10 @@ class FlutterPrinceOfVersions {
     return UpdateData.fromMap(data);
   }
 
-  /// Returns information from PlayStore or AppStore as [UpdateData].
-  /// NOTE: Not tested yet.
+  /// Returns information from AppStore as [UpdateData].
+  /// Uses your applications Bundle ID to fetch data from App Store.
+  /// [notifyOnce] - determines if the app should be notified only once of the update status or always. Default setting is false.
+  /// [trackPhasedRelease] - bool that indicates whether PoV should notify about new version after 7 days when app is fully rolled out or immediately. Default value is true.
   static Future<UpdateData> checkForUpdatesFromAppStore(
       {bool trackPhasedRelease = true, bool notifyOnce = false}) async {
     if (Platform.isAndroid) {
@@ -40,12 +42,15 @@ class FlutterPrinceOfVersions {
     return UpdateData.fromMap(data);
   }
 
-  static Future<void> checkForUpdatesFromGooglePlay(String url, Callback callback) async {
+  /// Checks Google Store data for your application. If your application is not on Google Store, error method in callback is triggered.
+  /// Brings native Android update alert. Depending on different update states, different callback methods are triggered.
+  /// [callback] - your implementation of possible update states
+  static Future<void> checkForUpdatesFromGooglePlay(Callback callback) async {
     if (Platform.isIOS) {
       return;
     }
     _channel.setMethodCallHandler((call) => _handleAndroidInvocations(call, callback));
-    await _channel.invokeMethod(Constants.checkUpdatesFromPlayStoreMethodName, [url]);
+    await _channel.invokeMethod(Constants.checkUpdatesFromPlayStoreMethodName);
   }
 
   static Future<void> _handleAndroidInvocations(MethodCall call, Callback callback) async {
