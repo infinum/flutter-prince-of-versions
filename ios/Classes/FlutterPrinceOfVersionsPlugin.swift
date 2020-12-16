@@ -67,7 +67,9 @@ public class FlutterPrinceOfVersionsPlugin: NSObject, FlutterPlugin {
                 self.dispatchQueue.async {
                     self.dispatchGroup.enter()
                     FlutterPrinceOfVersionsPlugin.flutterChannel?.invokeMethod(Constants.Flutter.requirementsMethodName, arguments: [key, apiValue], result: { (result) in
-                        requirementResult = result as! Bool
+                        if let newResult = result as? Bool  {
+                            requirementResult = newResult
+                        }
                         self.dispatchGroup.leave()
                     })
                     self.dispatchGroup.wait(timeout: .distantFuture)
