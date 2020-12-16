@@ -135,19 +135,6 @@ struct AppStoreUpdateData: Encodable {
         self.appStoreUpdateInfo = updateInfo
     }
 
-    enum CodingKeys: String, CodingKey {
-           case status
-           case version
-           case appStoreUpdateInfo
-    }
-
-    func encode(to encoder: Encoder) throws {
-            var container = encoder.container(keyedBy: CodingKeys.self)
-            try container.encode(status.toString(), forKey: .status)
-            try container.encode(appStoreUpdateInfo, forKey: .appStoreUpdateInfo)
-            try container.encode(version, forKey: .version)
-    }
-
     func asDictionary() throws -> [String: Any] {
         let data = try JSONEncoder().encode(self)
         guard let dictionary = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String: Any] else {
@@ -189,7 +176,17 @@ extension UpdateStatus {
             return Constants.UpdateStatus.requiredUpdate
         }
     }
+}
 
+extension UpdateStatus: Encodable {
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.singleValueContainer()
+        switch (self) {
+        case .noUpdateAvailable: try container.encode(Constants.UpdateStatus.noUpdate)
+        case .requiredUpdateNeeded: try container.encode(Constants.UpdateStatus.requiredUpdate)
+        case .newUpdateAvailable: try container.encode(Constants.UpdateStatus.updateAvailable)
+        }
+    }
 }
 
 extension Version {
