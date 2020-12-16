@@ -64,7 +64,8 @@ class _MyAppState extends State<MyApp> {
               child: Text('Play Store test'),
               onPressed: () async {
                 final Callback callback = MyCallback(context);
-                await FlutterPrinceOfVersions.checkForUpdatesFromGooglePlay("http://pastebin.com/raw/QFGjJrLP", c);
+                await FlutterPrinceOfVersions.checkForUpdatesFromGooglePlay(
+                    "http://pastebin.com/raw/QFGjJrLP", callback);
               }),
         ],
       ),

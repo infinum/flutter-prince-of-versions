@@ -31,13 +31,6 @@ object Constants {
     const val NO_UPDATE_CALLBACK = "no_update"
     const val ON_PENDING = "on_pending"
 
-
-
-    const val INVALID_JSON_CODE = "1"
-    const val INVALID_JSON_MESSAGE = "Invalid JSON"
-    const val INVALID_URL_CODE = "2"
-    const val INVALID_URL_MESSAGE = "Invalid URL"
-
     const val CHANNEL_NAME = "flutter_prince_of_versions"
     const val REQUIREMENTS_CHANNEL_NAME = "flutter_prince_of_versions_requirements"
     const val REQUIREMENTS_METHOD_NAME = "request_options"
