@@ -2,6 +2,7 @@ package com.example.flutter_prince_of_versions
 
 import android.app.Activity
 import android.content.Context
+import android.os.Looper
 import androidx.annotation.NonNull
 import androidx.fragment.app.FragmentActivity
 import co.infinum.princeofversions.*
@@ -14,6 +15,7 @@ import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
+import kotlinx.coroutines.*
 
 
 class FlutterPrinceOfVersionsPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
@@ -48,15 +50,17 @@ class FlutterPrinceOfVersionsPlugin : FlutterPlugin, MethodCallHandler, Activity
                 checkForUpdates(url, requirements, result)
             }
             Constants.CHECK_UPDATES_FROM_PLAY_STORE_METHOD_NAME -> {
-                checkForUpdatesFromPlayStore()
+                val argsList = call.arguments as List<*>
+                val url = argsList.first() as String
+                checkForUpdatesFromPlayStore(url)
             }
         }
     }
-    private fun checkForUpdatesFromPlayStore() {
+    private fun checkForUpdatesFromPlayStore(url: String) {
         val queenOfVersions = QueenOfVersions.Builder()
                 .build(this.activity as FragmentActivity)
 
-        val loader = NetworkLoader("")
+        val loader = NetworkLoader(url)
 
         val callback = QueenOfVersions.Callback.Builder()
                 .withOnCanceled {
@@ -102,19 +106,25 @@ class FlutterPrinceOfVersionsPlugin : FlutterPlugin, MethodCallHandler, Activity
         val updater = PrinceOfVersions.Builder()
 
         requirements.forEach {
-            updater.addRequirementsChecker(it) {  value ->
-            var requirementResult = false
+            updater.addRequirementsChecker(it) { value ->
+                var requirementResult = false
 
-            requirementsChannel.invokeMethod(Constants.REQUIREMENTS_METHOD_NAME, listOf(it, value), object: Result {
-                override fun success(result: Any?) {
-                    requirementResult = result as Boolean
+                activity.runOnUiThread {
+                    requirementsChannel.invokeMethod(Constants.REQUIREMENTS_METHOD_NAME, listOf(it, value), object : Result {
+                    override fun success(result: Any?) {
+                        requirementResult = result as Boolean
+                    }
+
+                    override fun error(errorCode: String?, errorMessage: String?, errorDetails: Any?) {}
+                    override fun notImplemented() {}
+                    })
                 }
 
-                override fun error(errorCode: String?, errorMessage: String?, errorDetails: Any?) {}
-                override fun notImplemented() {}
+                runBlocking {
+                    delay(500L)
+                }
 
-            })
-            requirementResult
+                requirementResult
             }
         }
         val loader: Loader = NetworkLoader(url)

@@ -22,19 +22,23 @@ public class FlutterPrinceOfVersionsPlugin: NSObject, FlutterPlugin {
             let shouldPinCertificates = args?[1] as? Bool
             let httpHeaderFields = args?[2] as? [String: String]
             let url = args?.first as? String
-            checkForUpdates(url: url,
-                            shouldPinCertificates: shouldPinCertificates,
-                            httpHeaderFields: httpHeaderFields,
-                            requestOptions: requestOptions,
-                            result: result)
+            checkForUpdates(
+                url: url,
+                shouldPinCertificates: shouldPinCertificates,
+                httpHeaderFields: httpHeaderFields,
+                requestOptions: requestOptions,
+                result: result
+            )
         }
         else if (call.method == Constants.Flutter.checkUpdatesFromStoreMethodName) {
             let args = call.arguments as? [Bool]
             let trackPhaseRelease = args?.first ?? false
             let notificationFrequency = args?.last ?? false
-            checkForUpdatesFromAppStore(trackPhaseRelease: trackPhaseRelease,
-                                        notificationFrequency: notificationFrequency ? .once : .always,
-                                        result: result)
+            checkForUpdatesFromAppStore(
+                trackPhaseRelease: trackPhaseRelease,
+                notificationFrequency: notificationFrequency ? .once : .always,
+                result: result
+            )
         }
 
     }
@@ -105,7 +109,12 @@ public class FlutterPrinceOfVersionsPlugin: NSObject, FlutterPlugin {
                                               updateInfo: appStoreResult.updateInfo)
                 do {
                     result(try data.asDictionary())
-                } catch {}
+                } catch {
+                    result(FlutterError(code: "",
+                                        message: Constants.Error.dataParseError,
+                                        details: nil)
+                    )
+                }
 
             case .failure(let error):
                 result(FlutterError(code: "",
@@ -128,19 +137,6 @@ struct AppStoreUpdateData: Encodable {
         self.status = status
         self.version = version
         self.appStoreUpdateInfo = updateInfo
-    }
-
-    enum CodingKeys: String, CodingKey {
-           case status
-           case version
-           case appStoreUpdateInfo
-    }
-
-    func encode(to encoder: Encoder) throws {
-            var container = encoder.container(keyedBy: CodingKeys.self)
-            try container.encode(status.toString(), forKey: .status)
-            try container.encode(appStoreUpdateInfo, forKey: .appStoreUpdateInfo)
-            try container.encode(version, forKey: .version)
     }
 
     func asDictionary() throws -> [String: Any] {
@@ -184,7 +180,17 @@ extension UpdateStatus {
             return Constants.UpdateStatus.requiredUpdate
         }
     }
+}
 
+extension UpdateStatus: Encodable {
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.singleValueContainer()
+        switch (self) {
+        case .noUpdateAvailable: try container.encode(toString())
+        case .requiredUpdateNeeded: try container.encode(toString())
+        case .newUpdateAvailable: try container.encode(toString())
+        }
+    }
 }
 
 extension Version {

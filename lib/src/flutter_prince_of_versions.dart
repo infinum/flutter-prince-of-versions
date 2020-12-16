@@ -52,13 +52,13 @@ class FlutterPrinceOfVersions {
   /// Checks Google Store data for your application. If your application is not on Google Store, error method in callback is triggered.
   /// Brings native Android update alert. Depending on different update states, different callback methods are triggered.
   /// [callback] - your implementation of possible update states
-  /// If this method is called on iOS, nothing will happen.
-  static Future<void> checkForUpdatesFromGooglePlay(Callback callback) async {
+  /// [url] - url to your application on Google Store
+  static Future<void> checkForUpdatesFromGooglePlay(String url, Callback callback) async {
     if (Platform.isIOS) {
       return;
     }
     _channel.setMethodCallHandler((call) => _handleAndroidInvocations(call, callback));
-    await _channel.invokeMethod(Constants.checkUpdatesFromPlayStoreMethodName);
+    await _channel.invokeMethod(Constants.checkUpdatesFromPlayStoreMethodName, [url]);
   }
 
   static Future<void> _handleAndroidInvocations(MethodCall call, Callback callback) async {
