@@ -182,9 +182,9 @@ extension UpdateStatus: Encodable {
     public func encode(to encoder: Encoder) throws {
         var container = encoder.singleValueContainer()
         switch (self) {
-        case .noUpdateAvailable: try container.encode(Constants.UpdateStatus.noUpdate)
-        case .requiredUpdateNeeded: try container.encode(Constants.UpdateStatus.requiredUpdate)
-        case .newUpdateAvailable: try container.encode(Constants.UpdateStatus.updateAvailable)
+        case .noUpdateAvailable: try container.encode(toString())
+        case .requiredUpdateNeeded: try container.encode(toString())
+        case .newUpdateAvailable: try container.encode(toString())
         }
     }
 }
