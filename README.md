@@ -1,11 +1,16 @@
 # Flutter Prince of Versions
 
+<p align="center">
+    <img src="prince-of-versions.svg" width="300" max-width="50%" alt="Japx"/>
+</p>
+
+
 Library checks for updates using configuration from some resource.
 
 It uses:
- - Prince of Versions on iOS (https://github.com/infinum/iOS-prince-of-versions)
- - Prince of Versions on Android (https://github.com/infinum/Android-Prince-of-Versions)
- - Queen of Versions on Android (https://github.com/infinum/Android-Prince-of-Versions/tree/master/queen-of-versions)
+ - [Prince of Versions on iOS](https://github.com/infinum/iOS-prince-of-versions)
+ - [Prince of Versions on Android](https://github.com/infinum/Android-Prince-of-Versions)
+ - [Queen of Versions on Android](https://github.com/infinum/Android-Prince-of-Versions/tree/master/queen-of-versions)
 
 ## Usage
 
