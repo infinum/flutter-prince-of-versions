@@ -13,3 +13,7 @@
 ## 1.0.3
 
 * Logo update.
+
+## 1.0.4
+
+* Logo image fixed.
