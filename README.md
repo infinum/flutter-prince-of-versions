@@ -1,7 +1,7 @@
 # Flutter Prince of Versions
 
 <p align="center">
-    <img src="prince-of-versions.svg" width="300" max-width="50%" alt="PoV"/>
+    <img src="prince-of-versions.png" width="300" max-width="50%" alt="PoV"/>
 </p>
 
 
