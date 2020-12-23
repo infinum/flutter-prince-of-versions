@@ -54,14 +54,16 @@ class _MyAppState extends State<MyApp> {
                 }
                 print('Update status: ${data.status.toString()}');
                 print('Current version: ${data.version.major}');
-                print('Last available major version: ${data.updateInfo.lastVersionAvailable.major}');
+                print(
+                    'Last available major version: ${data.updateInfo.lastVersionAvailable.major}');
               }),
           SizedBox(height: 20),
           CupertinoButton.filled(
               child: Text('App Store test'),
               onPressed: () async {
-                final data = await FlutterPrinceOfVersions.checkForUpdatesFromAppStore(
-                    trackPhasedRelease: true, notifyOnce: false);
+                final data =
+                    await FlutterPrinceOfVersions.checkForUpdatesFromAppStore(
+                        trackPhasedRelease: true, notifyOnce: false);
                 print('Update status: ${data.status.toString()}');
                 print('Current version: ${data.version.major}');
               }),

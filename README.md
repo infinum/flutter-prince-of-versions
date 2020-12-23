@@ -1,7 +1,7 @@
 # Flutter Prince of Versions
 
 <p align="center">
-    <img src="prince-of-versions.svg" width="300" max-width="50%" alt="Japx"/>
+    <img src="prince-of-versions.svg" width="300" max-width="50%" alt="PoV"/>
 </p>
 
 
@@ -176,7 +176,7 @@ Feedback and code contributions are very much welcome. Just make a pull request 
 
 ## Credits
 
-Maintained and sponsored by [Infinum](http://www.infinum.com).
+Maintained and sponsored by [Infinum](https://www.infinum.com).
 <a href='https://infinum.com'>
   <img src='https://infinum.com/infinum.png' href='https://infinum.com' width='264'>
 </a>

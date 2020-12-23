@@ -37,8 +37,11 @@ class Constants {
   static const onPending = "on_pending";
 
   static const channelName = "flutter_prince_of_versions";
-  static const requirementsChannelName = "flutter_prince_of_versions_requirements";
+  static const requirementsChannelName =
+      "flutter_prince_of_versions_requirements";
   static const checkForUpdatesMethodName = "check_for_updates";
-  static const checkUpdatesFromAppStoreMethodName = "check_updates_from_app_store";
-  static const checkUpdatesFromPlayStoreMethodName = "check_updates_from_play_store";
+  static const checkUpdatesFromAppStoreMethodName =
+      "check_updates_from_app_store";
+  static const checkUpdatesFromPlayStoreMethodName =
+      "check_updates_from_play_store";
 }
