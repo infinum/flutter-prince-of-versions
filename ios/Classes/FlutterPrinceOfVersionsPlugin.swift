@@ -82,8 +82,11 @@ public class FlutterPrinceOfVersionsPlugin: NSObject, FlutterPlugin {
         }
 
         PrinceOfVersions.checkForUpdates(from: povUrl, options: povOptions)  { response in
+
+
             switch response.result {
             case .success(let updateResultData):
+                let a = updateResultData.metadata
                 let data = UpdateData(status: updateResultData.updateState,
                                       version: updateResultData.updateVersion,
                                       updateInfo: updateResultData.updateInfo)
