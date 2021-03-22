@@ -17,3 +17,8 @@
 ## 1.0.4
 
 * Logo image fixed.
+
+## 1.0.5
+
+* Added metada.
+* Fixed issue where requirements would not be optional.
