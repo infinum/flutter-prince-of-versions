@@ -88,7 +88,7 @@ public class FlutterPrinceOfVersionsPlugin: NSObject, FlutterPlugin {
                 let data = UpdateData(status: updateResultData.updateState,
                                       version: updateResultData.updateVersion,
                                       updateInfo: updateResultData.updateInfo,
-                                      metadata: updateResultData.metadata!)
+                                      metadata: updateResultData.metadata)
                 result(data.toMap())
             case .failure(let error):
                 result(FlutterError(code: "",
