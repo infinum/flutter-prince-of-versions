@@ -22,3 +22,7 @@
 
 * Added metada.
 * Fixed issue where requirements would not be optional.
+
+## 1.0.6
+
+* Update to iOS 11 as minimum version in example and podfile
