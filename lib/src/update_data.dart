@@ -36,15 +36,11 @@ class UpdateInfo {
   static UpdateInfo fromMap(Map<dynamic, dynamic> map) {
     final UpdateInfo updateInfo = UpdateInfo();
     updateInfo.lastVersionAvailable =
-        map[Constants.lastVersionAvailable] != null
-            ? Version.fromMap(map[Constants.lastVersionAvailable])
-            : null;
-    updateInfo.installedVersion = map[Constants.installedVersion] != null
-        ? Version.fromMap(map[Constants.installedVersion])
-        : null;
-    updateInfo.requiredVersion = map[Constants.requiredVersion] != null
-        ? Version.fromMap(map[Constants.requiredVersion])
-        : null;
+        map[Constants.lastVersionAvailable] != null ? Version.fromMap(map[Constants.lastVersionAvailable]) : null;
+    updateInfo.installedVersion =
+        map[Constants.installedVersion] != null ? Version.fromMap(map[Constants.installedVersion]) : null;
+    updateInfo.requiredVersion =
+        map[Constants.requiredVersion] != null ? Version.fromMap(map[Constants.requiredVersion]) : null;
     return updateInfo;
   }
 }
@@ -71,6 +67,22 @@ class Version {
     version.build = map[Constants.build];
     return version;
   }
+
+  String toString() {
+    return '$major.$minor.$patch';
+  }
+}
+
+class Metadata {
+  Map<String, dynamic> metadata;
+
+  static Metadata fromMap(Map<dynamic, dynamic> map) {
+    final Metadata metadata = Metadata();
+    metadata.metadata = {};
+    map.forEach((key, value) => metadata.metadata[key] = value);
+
+    return metadata;
+  }
 }
 
 /// Whole data about the application form JSON.
@@ -86,17 +98,14 @@ class UpdateData {
   /// Application [UpdateInfo]
   UpdateInfo updateInfo;
 
+  Metadata meta;
+
   static UpdateData fromMap(Map<dynamic, dynamic> map) {
     final UpdateData data = UpdateData();
-    data.status = map[Constants.status] != null
-        ? Status.fromMap(map[Constants.status])
-        : null;
-    data.version = map[Constants.version] != null
-        ? Version.fromMap(map[Constants.version])
-        : null;
-    data.updateInfo = map[Constants.updateInfo] != null
-        ? UpdateInfo.fromMap(map[Constants.updateInfo])
-        : null;
+    data.status = map[Constants.status] != null ? Status.fromMap(map[Constants.status]) : null;
+    data.version = map[Constants.version] != null ? Version.fromMap(map[Constants.version]) : null;
+    data.updateInfo = map[Constants.updateInfo] != null ? UpdateInfo.fromMap(map[Constants.updateInfo]) : null;
+    data.meta = map[Constants.metadata] != null ? Metadata.fromMap(map[Constants.metadata]) : null;
     return data;
   }
 }
@@ -115,14 +124,9 @@ class QueenOfVersionsUpdateData {
   static QueenOfVersionsUpdateData fromMap(Map<dynamic, dynamic> map) {
     final QueenOfVersionsUpdateData data = QueenOfVersionsUpdateData();
     data.clientVersionStalenessDays =
-        map[Constants.clientVersionStalenessDays] != null
-            ? map[Constants.clientVersionStalenessDays]
-            : null;
-    data.updatePriority = map[Constants.updatePriority] != null
-        ? map[Constants.updatePriority]
-        : null;
-    data.versionCode =
-        map[Constants.versionCode] != null ? map[Constants.versionCode] : null;
+        map[Constants.clientVersionStalenessDays] != null ? map[Constants.clientVersionStalenessDays] : null;
+    data.updatePriority = map[Constants.updatePriority] != null ? map[Constants.updatePriority] : null;
+    data.versionCode = map[Constants.versionCode] != null ? map[Constants.versionCode] : null;
     return data;
   }
 }

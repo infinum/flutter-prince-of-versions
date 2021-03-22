@@ -1,6 +1,6 @@
 PODS:
   - Flutter (1.0.0)
-  - flutter_prince_of_versions (0.0.1):
+  - flutter_prince_of_versions (1.0.4):
     - Flutter
     - PrinceOfVersions
   - PrinceOfVersions (4.0.0)
@@ -21,9 +21,9 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
-  flutter_prince_of_versions: 896aa09ca903aea0a5e283a580c234f8b4375bb9
+  flutter_prince_of_versions: 7807c81ff0cb70844e732d8971e068b222ee757e
   PrinceOfVersions: 1e3803a8697c9a1af6b3d775394d65e2a8f83312
 
-PODFILE CHECKSUM: aafe91acc616949ddb318b77800a7f51bffa2a4c
+PODFILE CHECKSUM: ffd7293eb7d5907b54a367fd400872baeef513a5
 
-COCOAPODS: 1.10.0
+COCOAPODS: 1.10.1

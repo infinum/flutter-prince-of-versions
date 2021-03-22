@@ -42,28 +42,22 @@ class _MyAppState extends State<MyApp> {
                   data = await FlutterPrinceOfVersions.checkForUpdates(
                     url: url,
                     shouldPinCertificates: false,
-                    requestOptions: {
-                      'region': (String region) {
-                        return region == 'hr';
-                      }
-                    },
                   );
                 } catch (error) {
+                  print(error);
                   // do something on error
-                  print('lol');
                 }
                 print('Update status: ${data.status.toString()}');
-                print('Current version: ${data.version.major}');
-                print(
-                    'Last available major version: ${data.updateInfo.lastVersionAvailable.major}');
+                print('Current version: ${data.updateInfo.installedVersion}');
+                print('Last available major version: ${data.updateInfo.lastVersionAvailable.major}');
+                print(data.meta.metadata);
               }),
           SizedBox(height: 20),
           CupertinoButton.filled(
               child: Text('App Store test'),
               onPressed: () async {
-                final data =
-                    await FlutterPrinceOfVersions.checkForUpdatesFromAppStore(
-                        trackPhasedRelease: true, notifyOnce: false);
+                final data = await FlutterPrinceOfVersions.checkForUpdatesFromAppStore(
+                    trackPhasedRelease: true, notifyOnce: false);
                 print('Update status: ${data.status.toString()}');
                 print('Current version: ${data.version.major}');
               }),
