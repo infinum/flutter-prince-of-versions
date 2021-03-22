@@ -48,8 +48,9 @@ class _MyAppState extends State<MyApp> {
                   // do something on error
                 }
                 print('Update status: ${data.status.toString()}');
-                print('Current version: ${data.version.major}');
+                print('Current version: ${data.updateInfo.installedVersion}');
                 print('Last available major version: ${data.updateInfo.lastVersionAvailable.major}');
+                print(data.meta.metadata);
               }),
           SizedBox(height: 20),
           CupertinoButton.filled(

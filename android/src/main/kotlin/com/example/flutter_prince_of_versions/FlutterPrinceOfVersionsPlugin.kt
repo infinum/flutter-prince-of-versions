@@ -173,7 +173,8 @@ fun UpdateResult.toMap(): Map<String, Any> {
     return mapOf(
             Constants.UPDATE_INFO to info.toMap(),
             Constants.VERSION to mapOf(Constants.MAJOR to updateVersion),
-            Constants.STATUS to status.toMap()
+            Constants.STATUS to status.toMap(),
+            Constants.META to metadata
     )
 }
 

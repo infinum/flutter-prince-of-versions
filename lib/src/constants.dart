@@ -20,6 +20,8 @@ class Constants {
   static const version = "version";
   static const updateInfo = "updateInfo";
 
+  static const metadata = "metadata";
+
   static const versionCode = "versionCode";
   static const updatePriority = "updatePriority";
   static const clientVersionStalenessDays = "clientVersionStalenessDays";
@@ -37,11 +39,8 @@ class Constants {
   static const onPending = "on_pending";
 
   static const channelName = "flutter_prince_of_versions";
-  static const requirementsChannelName =
-      "flutter_prince_of_versions_requirements";
+  static const requirementsChannelName = "flutter_prince_of_versions_requirements";
   static const checkForUpdatesMethodName = "check_for_updates";
-  static const checkUpdatesFromAppStoreMethodName =
-      "check_updates_from_app_store";
-  static const checkUpdatesFromPlayStoreMethodName =
-      "check_updates_from_play_store";
+  static const checkUpdatesFromAppStoreMethodName = "check_updates_from_app_store";
+  static const checkUpdatesFromPlayStoreMethodName = "check_updates_from_play_store";
 }

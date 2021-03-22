@@ -27,6 +27,7 @@ enum Constants {
         static let status = "status"
         static let version = "version"
         static let updateInfo = "updateInfo"
+        static let meta = "metadata"
     }
 
     enum Error {
