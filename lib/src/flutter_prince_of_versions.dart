@@ -28,8 +28,12 @@ class FlutterPrinceOfVersions {
     if (requestOptions != null) {
       _requirementsChannel.setMethodCallHandler((call) => _handleRequirementInvocations(call, requestOptions));
     }
-    final Map<dynamic, dynamic> data = await _channel.invokeMethod(Constants.checkForUpdatesMethodName,
-        [url, shouldPinCertificates, httpHeaderFields, requestOptions == null ? [] : requestOptions.keys.toList()]);
+    final Map<dynamic, dynamic> data = await _channel.invokeMethod(Constants.checkForUpdatesMethodName, [
+      url,
+      shouldPinCertificates,
+      httpHeaderFields,
+      requestOptions == null ? [] : requestOptions.keys.toList(),
+    ]);
     return UpdateData.fromMap(data);
   }
 
