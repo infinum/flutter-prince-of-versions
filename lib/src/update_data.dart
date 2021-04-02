@@ -7,10 +7,12 @@ enum UpdateStatus {
   newUpdateAvailable,
 }
 
-extension Status on UpdateStatus {
-  static UpdateStatus fromMap(dynamic status) {
-    final String currentStatus = status as String;
-    switch (currentStatus) {
+class UpdateStatusMapper {
+  UpdateStatusMapper._();
+
+  static UpdateStatus map(dynamic value) {
+    final rawUpdateStatus = value as String;
+    switch (rawUpdateStatus) {
       case Constants.updateAvailable:
         return UpdateStatus.newUpdateAvailable;
       case Constants.noUpdate:
@@ -18,54 +20,68 @@ extension Status on UpdateStatus {
       case Constants.requiredUpdate:
         return UpdateStatus.requiredUpdateNeeded;
     }
-    return UpdateStatus.noUpdateAvailable;
+    throw Error();
   }
 }
 
 /// Information about the app.
+@immutable
 class UpdateInfo {
+  const UpdateInfo({
+    this.lastVersionAvailable,
+    required this.installedVersion,
+    this.requiredVersion,
+  });
+
   /// Last version that can be installed.
-  Version lastVersionAvailable;
+  final Version? lastVersionAvailable;
 
   /// Current installed version.
-  Version installedVersion;
+  final Version installedVersion;
 
   /// Minimum required version.
-  Version requiredVersion;
+  final Version? requiredVersion;
 
-  static UpdateInfo fromMap(Map<dynamic, dynamic> map) {
-    final UpdateInfo updateInfo = UpdateInfo();
-    updateInfo.lastVersionAvailable =
-        map[Constants.lastVersionAvailable] != null ? Version.fromMap(map[Constants.lastVersionAvailable]) : null;
-    updateInfo.installedVersion =
-        map[Constants.installedVersion] != null ? Version.fromMap(map[Constants.installedVersion]) : null;
-    updateInfo.requiredVersion =
-        map[Constants.requiredVersion] != null ? Version.fromMap(map[Constants.requiredVersion]) : null;
-    return updateInfo;
+  factory UpdateInfo.fromMap(Map<dynamic, dynamic> map) {
+    return UpdateInfo(
+      lastVersionAvailable:
+          map.containsKey(Constants.lastVersionAvailable) ? Version.fromMap(map[Constants.lastVersionAvailable]) : null,
+      installedVersion: Version.fromMap(map[Constants.installedVersion]),
+      requiredVersion:
+          map.containsKey(Constants.requiredVersion) ? Version.fromMap(map[Constants.requiredVersion]) : null,
+    );
   }
 }
 
 /// Version of the app. On Android only major is used.
+@immutable
 class Version {
+  const Version({
+    required this.major,
+    this.minor,
+    this.patch,
+    this.build,
+  });
+
   /// App major version number. iOS and Android.
-  int major;
+  final int major;
 
   /// App minor version number. iOS only.
-  int minor;
+  final int? minor;
 
   /// App patch version number. iOS only.
-  int patch;
+  final int? patch;
 
   /// App build version number. iOS only.
-  int build;
+  final int? build;
 
-  static Version fromMap(Map<dynamic, dynamic> map) {
-    final Version version = Version();
-    version.major = map[Constants.major];
-    version.minor = map[Constants.minor];
-    version.patch = map[Constants.patch];
-    version.build = map[Constants.build];
-    return version;
+  factory Version.fromMap(Map<dynamic, dynamic> map) {
+    return Version(
+      major: map[Constants.major] as int,
+      minor: map[Constants.minor] as int?,
+      patch: map[Constants.patch] as int?,
+      build: map[Constants.build] as int?,
+    );
   }
 
   String toString() {
@@ -73,40 +89,41 @@ class Version {
   }
 }
 
-class Metadata {
-  Map<String, dynamic> metadata;
-
-  static Metadata fromMap(Map<dynamic, dynamic> map) {
-    final Metadata metadata = Metadata();
-    metadata.metadata = {};
-    map.forEach((key, value) => metadata.metadata[key] = value);
-
-    return metadata;
-  }
-}
-
 /// Whole data about the application form JSON.
 /// Can be used in custom flows. For example:
 /// If UpdateInfo.lastAvailableVersion.major > 2 don't do anything.
+@immutable
 class UpdateData {
+  const UpdateData({
+    required this.status,
+    required this.version,
+    required this.updateInfo,
+    required this.metadata,
+  });
+
   /// Application [UpdateStatus]
-  UpdateStatus status;
+  final UpdateStatus status;
 
   /// Application [Version]
-  Version version;
+  final Version version;
 
   /// Application [UpdateInfo]
-  UpdateInfo updateInfo;
+  final UpdateInfo updateInfo;
 
-  Metadata meta;
+  final Map<String, dynamic> metadata;
 
-  static UpdateData fromMap(Map<dynamic, dynamic> map) {
-    final UpdateData data = UpdateData();
-    data.status = map[Constants.status] != null ? Status.fromMap(map[Constants.status]) : null;
-    data.version = map[Constants.version] != null ? Version.fromMap(map[Constants.version]) : null;
-    data.updateInfo = map[Constants.updateInfo] != null ? UpdateInfo.fromMap(map[Constants.updateInfo]) : null;
-    data.meta = map[Constants.metadata] != null ? Metadata.fromMap(map[Constants.metadata]) : null;
-    return data;
+  factory UpdateData.fromMap(Map<dynamic, dynamic> map) {
+    return UpdateData(
+      status: UpdateStatusMapper.map(map[Constants.status]),
+      version: Version.fromMap(map[Constants.version]),
+      updateInfo: UpdateInfo.fromMap(map[Constants.updateInfo]),
+      metadata: _mapMetadata(map[Constants.metadata]),
+    );
+  }
+
+  static Map<String, dynamic> _mapMetadata(dynamic value) {
+    final rawMetadata = value as Map<dynamic, dynamic>;
+    return rawMetadata.map((key, value) => MapEntry(key as String, value));
   }
 }
 
