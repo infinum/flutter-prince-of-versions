@@ -9,8 +9,8 @@ part of flutter_prince_of_versions;
 class FlutterPrinceOfVersions {
   FlutterPrinceOfVersions._();
 
-  static MethodChannel _channel = const MethodChannel(Constants.channelName);
-  static MethodChannel _requirementsChannel = const MethodChannel(Constants.requirementsChannelName);
+  static const _channel = MethodChannel(Constants.channelName);
+  static const _requirementsChannel = MethodChannel(Constants.requirementsChannelName);
 
   /// Returns parsed JSON data modeled as [UpdateData].
   /// [url] to the JSON.

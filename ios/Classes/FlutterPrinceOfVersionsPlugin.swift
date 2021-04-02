@@ -3,14 +3,14 @@ import UIKit
 import PrinceOfVersions
 
 public class FlutterPrinceOfVersionsPlugin: NSObject, FlutterPlugin {
-    static var flutterChannel: FlutterMethodChannel?
+    static var requirementsChannel: FlutterMethodChannel?
 
     let dispatchQueue = DispatchQueue(label: Constants.requirementCheck)
     let dispatchGroup = DispatchGroup()
 
     public static func register(with registrar: FlutterPluginRegistrar) {
         let channel = FlutterMethodChannel(name: Constants.Flutter.channelName, binaryMessenger: registrar.messenger())
-        flutterChannel = FlutterMethodChannel(name: Constants.Flutter.requirementsChannelName, binaryMessenger: registrar.messenger())
+        requirementsChannel = FlutterMethodChannel(name: Constants.Flutter.requirementsChannelName, binaryMessenger: registrar.messenger())
         let instance = FlutterPrinceOfVersionsPlugin()
         registrar.addMethodCallDelegate(instance, channel: channel)
     }
@@ -66,7 +66,7 @@ public class FlutterPrinceOfVersionsPlugin: NSObject, FlutterPlugin {
 
                 self.dispatchQueue.async {
                     self.dispatchGroup.enter()
-                    FlutterPrinceOfVersionsPlugin.flutterChannel?.invokeMethod(Constants.Flutter.requirementsMethodName,
+                    FlutterPrinceOfVersionsPlugin.requirementsChannel?.invokeMethod(Constants.Flutter.checkRequirementMethodName,
                                                                                arguments: [key, apiValue],
                                                                                result: { (result) in
                         if let newResult = result as? Bool  {
