@@ -165,7 +165,7 @@ class UpdateData {
         return [Constants.UpdateData.status: status.toString(),
                 Constants.UpdateData.version: version.toMap(),
                 Constants.UpdateData.updateInfo: updateInfo.toMap(),
-                Constants.UpdateData.meta: metadata]
+                Constants.UpdateData.metadata: metadata]
     }
 }
 
