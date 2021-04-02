@@ -1,5 +1,8 @@
 part of flutter_prince_of_versions;
 
+/// Signature for a function that checks if a requirement is satisfied.
+typedef RequirementCheck = FutureOr<bool> Function(dynamic);
+
 /// Library for checking if an update is available for your application.
 /// [FlutterPrinceOfVersions] parses a JSON response stored on server and returns the result.
 /// There are three possible results: [UpdateStatus.noUpdateAvailable], [UpdateStatus.requiredUpdateNeeded] and
@@ -16,24 +19,23 @@ class FlutterPrinceOfVersions {
   /// [url] to the JSON.
   /// [shouldPinCertificates] - iOS only. Indicates whether PoV should use security keys from all certificates found in the main bundle. Default is false.
   /// [httpHeaderFields] - iOS only. Http header fields.
-  /// [requestOptions] - Adds requirement check for configuration. Map key that matches key in requirements array in JSON with requirementsCheck parameter.
-  /// Map value for key is a method that will be called when checking if the value of requirement is valid. This method is expected to return a bool.
+  /// [requirementChecks] - Map of requirement keys and associated checks. A check determines if the value of the given requirement key satisfies the requirement.
+  /// If JSON data model provides a requirement for which a [RequirementCheck] is not supplied, the requirement will be consider as not satisfied.
   /// If the method does not return a bool, whole requirement will be false.
   /// This method will throw an error if it does not manage to fetch JSON data.
-  static Future<UpdateData> checkForUpdates(
-      {@required String url,
-      bool shouldPinCertificates,
-      Map<String, String> httpHeaderFields,
-      Map<String, Function> requestOptions}) async {
-    if (requestOptions != null) {
-      _requirementsChannel.setMethodCallHandler((call) => _handleRequirementInvocations(call, requestOptions));
-    }
-    final Map<dynamic, dynamic> data = await _channel.invokeMethod(Constants.checkForUpdatesMethodName, [
+  static Future<UpdateData> checkForUpdates({
+    required String url,
+    bool shouldPinCertificates = false,
+    Map<String, String> httpHeaderFields = const {},
+    Map<String, RequirementCheck> requirementChecks = const {},
+  }) async {
+    _requirementsChannel.setMethodCallHandler((call) => _handleRequirementsChannelMethodCall(call, requirementChecks));
+    final data = await _channel.invokeMethod(Constants.checkForUpdatesMethodName, [
       url,
       shouldPinCertificates,
       httpHeaderFields,
-      requestOptions == null ? [] : requestOptions.keys.toList(),
-    ]);
+      requirementChecks.keys.toList(),
+    ]) as Map<dynamic, dynamic>;
     return UpdateData.fromMap(data);
   }
 
@@ -104,8 +106,19 @@ class FlutterPrinceOfVersions {
     }
   }
 
-  static Future<bool> _handleRequirementInvocations(MethodCall call, Map<String, Function> options) async {
-    final List<dynamic> arguments = call.arguments as List<dynamic>;
-    return options[arguments.first as String](arguments.last as String);
+  static Future<bool> _handleRequirementsChannelMethodCall(
+      MethodCall call, Map<String, RequirementCheck> requirementChecks) async {
+    switch (call.method) {
+      case Constants.checkRequirementMethodName:
+        {
+          final arguments = call.arguments as List<dynamic>;
+          final requirementKey = arguments[0] as String;
+          final requirementValue = arguments[1];
+
+          final requirementCheck = requirementChecks[requirementKey];
+          return (await requirementCheck?.call(requirementValue)) ?? false;
+        }
+    }
+    throw Error();
   }
 }

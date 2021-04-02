@@ -1,5 +1,6 @@
 library flutter_prince_of_versions;
 
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';

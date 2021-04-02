@@ -17,16 +17,16 @@ public class FlutterPrinceOfVersionsPlugin: NSObject, FlutterPlugin {
     
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
         if (call.method == Constants.Flutter.checkForUpdatesMethodName) {
-            let args = call.arguments as? [Any]
-            let requestOptions = args?.last as? [String]
-            let shouldPinCertificates = args?[1] as? Bool
-            let httpHeaderFields = args?[2] as? [String: String]
-            let url = args?.first as? String
+            let args = call.arguments as! [Any]
+            let url = args[0] as! String
+            let shouldPinCertificates = args[1] as! Bool
+            let httpHeaderFields = args[2] as! [String: String]
+            let requirementChecks = args[3] as! [String]
             checkForUpdates(
                 url: url,
                 shouldPinCertificates: shouldPinCertificates,
                 httpHeaderFields: httpHeaderFields,
-                requestOptions: requestOptions,
+                requirementChecks: requirementChecks,
                 result: result
             )
         }
@@ -43,9 +43,8 @@ public class FlutterPrinceOfVersionsPlugin: NSObject, FlutterPlugin {
 
     }
 
-    func checkForUpdates(url: String?, shouldPinCertificates: Bool?, httpHeaderFields: [String: String]?, requestOptions: [String]?, result: @escaping FlutterResult) {
-        guard let apiUrl = url,
-              let povUrl = URL(string: apiUrl)
+    func checkForUpdates(url: String, shouldPinCertificates: Bool, httpHeaderFields: [String: String], requirementChecks: [String], result: @escaping FlutterResult) {
+        guard let povUrl = URL(string: url)
         else {
             result(FlutterError(code: Constants.Error.invalidURLCode,
                                 message: Constants.Error.invalidURLMessage,
@@ -55,23 +54,21 @@ public class FlutterPrinceOfVersionsPlugin: NSObject, FlutterPlugin {
         }
 
         let povOptions = PoVRequestOptions()
-        povOptions.shouldPinCertificates = shouldPinCertificates ?? false
-        httpHeaderFields?.forEach { (key, value) in
+        povOptions.shouldPinCertificates = shouldPinCertificates
+        httpHeaderFields.forEach { (key, value) in
             povOptions.set(value: value as NSString, httpHeaderField: key as NSString)
         }
 
-        requestOptions?.forEach { (key) in
-            povOptions.addRequirement(key: key) { (apiValue) -> Bool in
+        requirementChecks.forEach { (requirementKey) in
+            povOptions.addRequirement(key: requirementKey) { (requirementValue) -> Bool in
                 var requirementResult = false
 
                 self.dispatchQueue.async {
                     self.dispatchGroup.enter()
                     FlutterPrinceOfVersionsPlugin.requirementsChannel?.invokeMethod(Constants.Flutter.checkRequirementMethodName,
-                                                                               arguments: [key, apiValue],
+                                                                               arguments: [requirementKey, requirementValue],
                                                                                result: { (result) in
-                        if let newResult = result as? Bool  {
-                            requirementResult = newResult
-                        }
+                        requirementResult = result as! Bool
                         self.dispatchGroup.leave()
                     })
                     self.dispatchGroup.wait(timeout: .distantFuture)
