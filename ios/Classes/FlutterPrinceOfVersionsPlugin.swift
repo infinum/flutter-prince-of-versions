@@ -105,15 +105,7 @@ public class FlutterPrinceOfVersionsPlugin: NSObject, FlutterPlugin {
                 let data = AppStoreUpdateData(status: appStoreResult.updateState,
                                               version: appStoreResult.updateVersion,
                                               updateInfo: appStoreResult.updateInfo)
-                do {
-                    result(try data.asDictionary())
-                } catch {
-                    result(FlutterError(code: "",
-                                        message: Constants.Error.dataParseError,
-                                        details: nil)
-                    )
-                }
-
+                result(data.toMap())
             case .failure(let error):
                 result(FlutterError(code: "",
                                     message: error.localizedDescription,
@@ -136,14 +128,12 @@ struct AppStoreUpdateData: Encodable {
         self.version = version
         self.appStoreUpdateInfo = updateInfo
     }
-
-    func asDictionary() throws -> [String: Any] {
-        let data = try JSONEncoder().encode(self)
-        guard let dictionary = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String: Any] else {
-          throw NSError()
-        }
-        return dictionary
-      }
+    
+    func toMap() -> [String: Any] {
+        return [Constants.UpdateData.status: status.toString(),
+                Constants.UpdateData.version: version.toMap(),
+                Constants.UpdateData.updateInfo: appStoreUpdateInfo.toMap()]
+    }
 }
 
 class UpdateData {
@@ -214,6 +204,6 @@ extension UpdateInfo {
 extension AppStoreUpdateInfo {
     func toMap() -> [String: Any?] {
         return [Constants.UpdateInfo.lastVersionAvailable: lastVersionAvailable?.toMap(),
-                Constants.UpdateInfo.installedVersion: installedVersion.toMap(),]
+                Constants.UpdateInfo.installedVersion: installedVersion.toMap()]
     }
 }

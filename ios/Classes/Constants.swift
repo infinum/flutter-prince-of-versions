@@ -35,7 +35,6 @@ enum Constants {
         static let invalidJSONMessage = "Invalid JSON"
         static let invalidURLCode = "2"
         static let invalidURLMessage = "Invalid URL"
-        static let dataParseError = "Error occurred while parsing the data."
     }
 
     enum Flutter {
