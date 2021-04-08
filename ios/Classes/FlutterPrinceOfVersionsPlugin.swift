@@ -30,7 +30,7 @@ public class FlutterPrinceOfVersionsPlugin: NSObject, FlutterPlugin {
                 result: result
             )
         }
-        else if (call.method == Constants.Flutter.checkUpdatesFromStoreMethodName) {
+        else if (call.method == Constants.Flutter.checkUpdatesFromAppStoreMethodName) {
             let args = call.arguments as? [Bool]
             let trackPhaseRelease = args?.first ?? false
             let notificationFrequency = args?.last ?? false
