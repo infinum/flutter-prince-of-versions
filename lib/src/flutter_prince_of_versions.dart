@@ -41,17 +41,21 @@ class FlutterPrinceOfVersions {
 
   /// Returns information from AppStore as [UpdateData].
   /// Uses your applications Bundle ID to fetch data from App Store.
-  /// [notifyOnce] - determines if the app should be notified only once of the update status or always. Default setting is false.
-  /// [trackPhasedRelease] - bool that indicates whether PoV should notify about new version after 7 days when app is fully rolled out or immediately. Default value is true.
-  /// This method will throw an error if it does not manage to fetch JSON data.
-  /// This method will return null as a result if called on Android platform.
-  static Future<UpdateData> checkForUpdatesFromAppStore(
-      {bool trackPhasedRelease = true, bool notifyOnce = false}) async {
-    if (Platform.isAndroid) {
-      return null;
+  /// [trackPhasedRelease] - bool that indicates whether PoV should notify about new version after 7 days when app is fully rolled out or immediately. Default is true.
+  /// [notifyOnce] - determines if the app should be notified only once of the update status or always. Default is false.
+  /// This method will throw if it is invoked from a platform other than iOS.
+  /// This method will throw if it does not manage to check for updates.
+  static Future<UpdateData> checkForUpdatesFromAppStore({
+    bool trackPhasedRelease = true,
+    bool notifyOnce = false,
+  }) async {
+    if (!Platform.isIOS) {
+      throw UnsupportedError('This method is only supported on iOS.');
     }
-    final Map<dynamic, dynamic> data =
-        await _channel.invokeMethod(Constants.checkUpdatesFromAppStoreMethodName, [trackPhasedRelease, notifyOnce]);
+    final data = await _channel.invokeMethod(Constants.checkUpdatesFromAppStoreMethodName, [
+      trackPhasedRelease,
+      notifyOnce,
+    ]) as Map<dynamic, dynamic>;
     return UpdateData.fromMap(data);
   }
 

@@ -31,12 +31,12 @@ public class FlutterPrinceOfVersionsPlugin: NSObject, FlutterPlugin {
             )
         }
         else if (call.method == Constants.Flutter.checkUpdatesFromAppStoreMethodName) {
-            let args = call.arguments as? [Bool]
-            let trackPhaseRelease = args?.first ?? false
-            let notificationFrequency = args?.last ?? false
+            let args = call.arguments as! [Any]
+            let trackPhaseRelease = args[0] as! Bool
+            let notifyOnce = args[1] as! Bool
             checkForUpdatesFromAppStore(
                 trackPhaseRelease: trackPhaseRelease,
-                notificationFrequency: notificationFrequency ? .once : .always,
+                notificationFrequency: notifyOnce ? .once : .always,
                 result: result
             )
         }
@@ -79,7 +79,6 @@ public class FlutterPrinceOfVersionsPlugin: NSObject, FlutterPlugin {
         }
 
         PrinceOfVersions.checkForUpdates(from: povUrl, options: povOptions)  { response in
-
             switch response.result {
             case .success(let updateResultData):
                 let data = UpdateData(status: updateResultData.updateState,
