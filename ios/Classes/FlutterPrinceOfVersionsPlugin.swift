@@ -46,7 +46,7 @@ public class FlutterPrinceOfVersionsPlugin: NSObject, FlutterPlugin {
     func checkForUpdates(url: String, shouldPinCertificates: Bool, httpHeaderFields: [String: String], requirementChecks: [String], result: @escaping FlutterResult) {
         guard let povUrl = URL(string: url)
         else {
-            result(FlutterError(code: Constants.Error.invalidURLCode,
+            result(FlutterError(code: "",
                                 message: Constants.Error.invalidURLMessage,
                                 details: nil)
             )
