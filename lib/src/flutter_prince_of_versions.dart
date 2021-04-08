@@ -52,7 +52,7 @@ class FlutterPrinceOfVersions {
     if (!Platform.isIOS) {
       throw UnsupportedError('This method is only supported on iOS.');
     }
-    final data = await _channel.invokeMethod(Constants.checkUpdatesFromAppStoreMethodName, [
+    final data = await _channel.invokeMethod(Constants.checkForUpdatesFromAppStoreMethodName, [
       trackPhasedRelease,
       notifyOnce,
     ]) as Map<dynamic, dynamic>;
