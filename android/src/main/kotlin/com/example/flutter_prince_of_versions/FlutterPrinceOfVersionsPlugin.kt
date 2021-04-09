@@ -2,7 +2,6 @@ package com.example.flutter_prince_of_versions
 
 import android.app.Activity
 import android.content.Context
-import android.os.Looper
 import androidx.annotation.NonNull
 import androidx.fragment.app.FragmentActivity
 import co.infinum.princeofversions.*
@@ -15,7 +14,8 @@ import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
-import kotlinx.coroutines.*
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.runBlocking
 
 
 class FlutterPrinceOfVersionsPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
@@ -45,9 +45,11 @@ class FlutterPrinceOfVersionsPlugin : FlutterPlugin, MethodCallHandler, Activity
         when (call.method) {
             Constants.CHECK_FOR_UPDATES_METHOD_NAME -> {
                 val argsList = call.arguments as List<*>
-                val url = argsList.first() as String
-                val requirements = argsList.last() as List<String>
-                checkForUpdates(url, requirements, result)
+                val url = argsList[0] as String
+                // argument1, and argument2 are not applicable on Android
+                @Suppress("UNCHECKED_CAST")
+                val requirementChecks = argsList[3] as List<String>
+                checkForUpdates(url, requirementChecks, result)
             }
             Constants.CHECK_FOR_UPDATES_FROM_PLAY_STORE_METHOD_NAME -> {
                 val argsList = call.arguments as List<*>
@@ -102,19 +104,20 @@ class FlutterPrinceOfVersionsPlugin : FlutterPlugin, MethodCallHandler, Activity
 
     }
 
-    private fun checkForUpdates(url: String, requirements: List<String>, @NonNull flutterResult: Result) {
+    private fun checkForUpdates(url: String, requirementChecks: List<String>, @NonNull flutterResult: Result) {
         val updater = PrinceOfVersions.Builder()
 
-        requirements.forEach {
-            updater.addRequirementsChecker(it) { value ->
+        requirementChecks.forEach { requirementKey ->
+            updater.addRequirementsChecker(requirementKey) { requirementValue ->
                 var requirementResult = false
 
                 activity.runOnUiThread {
-                    requirementsChannel.invokeMethod(Constants.CHECK_REQUIREMENT_METHOD_NAME, listOf(it, value), object : Result {
+                    requirementsChannel.invokeMethod(
+                            Constants.CHECK_REQUIREMENT_METHOD_NAME,
+                            listOf(requirementKey, requirementValue), object : Result {
                     override fun success(result: Any?) {
                         requirementResult = result as Boolean
                     }
-
                     override fun error(errorCode: String?, errorMessage: String?, errorDetails: Any?) {}
                     override fun notImplemented() {}
                     })
@@ -169,19 +172,20 @@ fun QueenOfVersionsInAppUpdateInfo.toMap(): Map<String, Int?> {
     )
 }
 
-fun UpdateResult.toMap(): Map<String, Any> {
+fun UpdateResult.toMap(): Map<String, Any?> {
     return mapOf(
-            Constants.UPDATE_INFO to info.toMap(),
-            Constants.VERSION to mapOf(Constants.MAJOR to updateVersion),
             Constants.STATUS to status.toMap(),
+            Constants.VERSION to mapVersion(updateVersion),
+            Constants.UPDATE_INFO to info.toMap(),
             Constants.META to metadata
     )
 }
 
-fun UpdateInfo.toMap(): Map<String, Any> {
-    return mapOf<String, Any>(Constants.LAST_VERSION_AVAILABLE to mapOf(Constants.MAJOR to lastVersionAvailable),
-            Constants.INSTALLED_VERSION to mapOf(Constants.MAJOR to installedVersion),
-            Constants.REQUIRED_VERSION to mapOf(Constants.MAJOR to requiredVersion)
+fun UpdateInfo.toMap(): Map<String, Any?> {
+    return mapOf(
+            Constants.LAST_VERSION_AVAILABLE to mapVersion(lastVersionAvailable),
+            Constants.INSTALLED_VERSION to mapVersion(installedVersion),
+            Constants.REQUIRED_VERSION to mapVersion(requiredVersion)
     )
 }
 
@@ -191,5 +195,13 @@ fun UpdateStatus.toMap(): String {
         UpdateStatus.NEW_UPDATE_AVAILABLE -> Constants.UPDATE_AVAILABLE
         UpdateStatus.NO_UPDATE_AVAILABLE -> Constants.NO_UPDATE
         UpdateStatus.REQUIRED_UPDATE_NEEDED -> Constants.REQUIRED_UPDATE
+    }
+}
+
+fun mapVersion(version: Int?): Map<String, Int>?{
+    return if (version == null){
+        null
+    } else {
+        mapOf(Constants.MAJOR to version)
     }
 }

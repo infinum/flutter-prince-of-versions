@@ -43,12 +43,13 @@ class UpdateInfo {
   final Version? requiredVersion;
 
   factory UpdateInfo.fromMap(Map<dynamic, dynamic> map) {
+    final latestVersionAvailableMap = map[Constants.lastVersionAvailable];
+    final requiredVersionMap = map[Constants.requiredVersion];
+
     return UpdateInfo(
-      lastVersionAvailable:
-          map.containsKey(Constants.lastVersionAvailable) ? Version.fromMap(map[Constants.lastVersionAvailable]) : null,
+      lastVersionAvailable: latestVersionAvailableMap != null ? Version.fromMap(latestVersionAvailableMap) : null,
       installedVersion: Version.fromMap(map[Constants.installedVersion]),
-      requiredVersion:
-          map.containsKey(Constants.requiredVersion) ? Version.fromMap(map[Constants.requiredVersion]) : null,
+      requiredVersion: requiredVersionMap != null ? Version.fromMap(requiredVersionMap) : null,
     );
   }
 }
