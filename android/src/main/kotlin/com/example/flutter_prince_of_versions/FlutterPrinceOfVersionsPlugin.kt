@@ -30,11 +30,11 @@ class FlutterPrinceOfVersionsPlugin : FlutterPlugin, MethodCallHandler, Activity
         this.context = flutterPluginBinding.applicationContext
 
         channel = MethodChannel(
-                flutterPluginBinding.getFlutterEngine().dartExecutor,
+                flutterPluginBinding.binaryMessenger,
                 Constants.CHANNEL_NAME
         )
         requirementsChannel = MethodChannel(
-                flutterPluginBinding.getFlutterEngine().dartExecutor,
+                flutterPluginBinding.binaryMessenger,
                 Constants.REQUIREMENTS_CHANNEL_NAME
         )
 
