@@ -129,22 +129,28 @@ class UpdateData {
 }
 
 /// Data about the application form Google Store.
+@immutable
 class QueenOfVersionsUpdateData {
+  const QueenOfVersionsUpdateData({
+    this.versionCode,
+    this.updatePriority,
+    this.clientVersionStalenessDays,
+  });
+
   /// Application version code.
-  int versionCode;
+  final int? versionCode;
 
   /// Application update priority.
-  int updatePriority;
+  final int? updatePriority;
 
   /// Number of days since the last application version was uploaded to the Store.
-  int clientVersionStalenessDays;
+  final int? clientVersionStalenessDays;
 
-  static QueenOfVersionsUpdateData fromMap(Map<dynamic, dynamic> map) {
-    final QueenOfVersionsUpdateData data = QueenOfVersionsUpdateData();
-    data.clientVersionStalenessDays =
-        map[Constants.clientVersionStalenessDays] != null ? map[Constants.clientVersionStalenessDays] : null;
-    data.updatePriority = map[Constants.updatePriority] != null ? map[Constants.updatePriority] : null;
-    data.versionCode = map[Constants.versionCode] != null ? map[Constants.versionCode] : null;
-    return data;
+  factory QueenOfVersionsUpdateData.fromMap(Map<dynamic, dynamic> map) {
+    return QueenOfVersionsUpdateData(
+      versionCode: map[Constants.versionCode] as int?,
+      updatePriority: map[Constants.updatePriority] as int?,
+      clientVersionStalenessDays: map[Constants.clientVersionStalenessDays] as int?,
+    );
   }
 }

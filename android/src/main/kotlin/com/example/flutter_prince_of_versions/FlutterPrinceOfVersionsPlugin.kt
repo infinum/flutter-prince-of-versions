@@ -166,7 +166,8 @@ class FlutterPrinceOfVersionsPlugin : FlutterPlugin, MethodCallHandler, Activity
 
 
 fun QueenOfVersionsInAppUpdateInfo.toMap(): Map<String, Int?> {
-    return mapOf(Constants.VERSION_CODE to versionCode(),
+    return mapOf(
+            Constants.VERSION_CODE to versionCode(),
             Constants.UPDATE_PRIORITY to updatePriority(),
             Constants.CLIENT_VERSION_STALENESS_DAYS to clientVersionStalenessDays()
     )
