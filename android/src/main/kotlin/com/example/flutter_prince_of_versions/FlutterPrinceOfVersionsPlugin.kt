@@ -53,7 +53,7 @@ class FlutterPrinceOfVersionsPlugin : FlutterPlugin, MethodCallHandler, Activity
             }
             Constants.CHECK_FOR_UPDATES_FROM_PLAY_STORE_METHOD_NAME -> {
                 val argsList = call.arguments as List<*>
-                val url = argsList.first() as String
+                val url = argsList[0] as String
                 checkForUpdatesFromPlayStore(url)
             }
         }
@@ -87,10 +87,10 @@ class FlutterPrinceOfVersionsPlugin : FlutterPlugin, MethodCallHandler, Activity
                     channel.invokeMethod(Constants.INSTALLING, it.toMap())
                 }
                 .withOnUpdateAccepted { info, status, result ->
-                    channel.invokeMethod(Constants.UPDATE_ACCEPTED, arrayOf(info.toMap(), status.toMap(), result?.toMap()))
+                    channel.invokeMethod(Constants.UPDATE_ACCEPTED, listOf(info.toMap(), status.toMap(), result?.toMap()))
                 }
                 .withOnUpdateDeclined { info, status, result ->
-                    channel.invokeMethod(Constants.UPDATE_DECLINED, arrayOf(info.toMap(), status.toMap(), result?.toMap()))
+                    channel.invokeMethod(Constants.UPDATE_DECLINED, listOf(info.toMap(), status.toMap(), result?.toMap()))
                 }
                 .withOnNoUpdate { _, updateInfo ->
                     channel.invokeMethod(Constants.NO_UPDATE_CALLBACK, updateInfo?.toMap())

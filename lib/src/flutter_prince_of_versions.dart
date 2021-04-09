@@ -59,26 +59,28 @@ class FlutterPrinceOfVersions {
     return UpdateData.fromMap(data);
   }
 
-  /// Checks Google Store data for your application. If your application is not on Google Store, error method in callback is triggered.
+  /// Checks Google Play Store data for your application. If your application is not on Play Store, [Callback.error] is called.
   /// Brings native Android update alert. Depending on different update states, different callback methods are triggered.
-  /// [callback] - your implementation of possible update states
-  /// [url] - url to your application on Google Store
+  /// [url] - url to your application on the Google Play Store.
+  /// [callback] - your implementation of possible update states.
   static Future<void> checkForUpdatesFromGooglePlay(String url, Callback callback) async {
-    if (Platform.isIOS) {
-      return;
+    if (!Platform.isAndroid) {
+      throw UnsupportedError('This method is only supported on Android');
     }
     _channel.setMethodCallHandler((call) => _handleAndroidInvocations(call, callback));
-    await _channel.invokeMethod(Constants.checkForUpdatesFromPlayStoreMethodName, [url]);
+    await _channel.invokeMethod(Constants.checkForUpdatesFromPlayStoreMethodName, [
+      url,
+    ]);
   }
 
   static Future<void> _handleAndroidInvocations(MethodCall call, Callback callback) async {
     if (call.method == Constants.canceled) {
       callback.canceled();
     } else if (call.method == Constants.mandatoryUpdateNotAvailable) {
-      List<dynamic> arguments = call.arguments as List<dynamic>;
-      final Map<dynamic, dynamic> firstArg = arguments.first;
-      final Map<dynamic, dynamic> secondArg = arguments.last;
-      callback.mandatoryUpdateNotAvailable(QueenOfVersionsUpdateData.fromMap(firstArg), UpdateInfo.fromMap(secondArg));
+      final arguments = call.arguments as List<dynamic>;
+      final arg0 = arguments[0] as Map<dynamic, dynamic>;
+      final arg1 = arguments[1] as Map<dynamic, dynamic>;
+      callback.mandatoryUpdateNotAvailable(QueenOfVersionsUpdateData.fromMap(arg0), UpdateInfo.fromMap(arg1));
     } else if (call.method == Constants.downloaded) {
       callback.downloaded(QueenOfVersionsUpdateData.fromMap(call.arguments as Map<dynamic, dynamic>));
     } else if (call.method == Constants.downloading) {
@@ -90,21 +92,30 @@ class FlutterPrinceOfVersions {
     } else if (call.method == Constants.installing) {
       callback.installing(QueenOfVersionsUpdateData.fromMap(call.arguments as Map<dynamic, dynamic>));
     } else if (call.method == Constants.updateAccepted) {
-      List<dynamic> arguments = call.arguments as List<dynamic>;
-      final Map<dynamic, dynamic> firstArg = arguments.first;
-      final Map<dynamic, dynamic> secondArg = arguments[1];
-      final Map<dynamic, dynamic> thirdArg = arguments.last;
+      final arguments = call.arguments as List<dynamic>;
+      final arg0 = arguments[0] as Map<dynamic, dynamic>;
+      final arg1 = arguments[1] as String;
+      final arg2 = arguments[2] as Map<dynamic, dynamic>?;
       callback.updateAccepted(
-          QueenOfVersionsUpdateData.fromMap(firstArg), Status.fromMap(secondArg), UpdateData.fromMap(thirdArg));
+        QueenOfVersionsUpdateData.fromMap(arg0),
+        UpdateStatusMapper.map(arg1),
+        arg2 != null ? UpdateData.fromMap(arg2) : null,
+      );
     } else if (call.method == Constants.updateDeclined) {
-      List<dynamic> arguments = call.arguments as List<dynamic>;
-      final Map<dynamic, dynamic> firstArg = arguments.first;
-      final Map<dynamic, dynamic> secondArg = arguments[1];
-      final Map<dynamic, dynamic> thirdArg = arguments.last;
+      final arguments = call.arguments as List<dynamic>;
+      final arg0 = arguments[0] as Map<dynamic, dynamic>;
+      final arg1 = arguments[1] as String;
+      final arg2 = arguments[2] as Map<dynamic, dynamic>?;
       callback.updateDeclined(
-          QueenOfVersionsUpdateData.fromMap(firstArg), Status.fromMap(secondArg), UpdateData.fromMap(thirdArg));
+        QueenOfVersionsUpdateData.fromMap(arg0),
+        UpdateStatusMapper.map(arg1),
+        arg2 != null ? UpdateData.fromMap(arg2) : null,
+      );
     } else if (call.method == Constants.noUpdateCallback) {
-      callback.noUpdate(UpdateInfo.fromMap(call.arguments as Map<dynamic, dynamic>));
+      final arg = call.arguments as Map<dynamic, dynamic>?;
+      callback.noUpdate(
+        arg != null ? UpdateInfo.fromMap(arg) : null,
+      );
     } else if (call.method == Constants.onPending) {
       callback.onPending(QueenOfVersionsUpdateData.fromMap(call.arguments as Map<dynamic, dynamic>));
     }
