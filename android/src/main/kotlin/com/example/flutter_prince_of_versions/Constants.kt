@@ -33,8 +33,9 @@ object Constants {
     const val ON_PENDING = "on_pending"
 
     const val CHANNEL_NAME = "flutter_prince_of_versions"
-    const val REQUIREMENTS_CHANNEL_NAME = "flutter_prince_of_versions_requirements"
-    const val REQUIREMENTS_METHOD_NAME = "request_options"
     const val CHECK_FOR_UPDATES_METHOD_NAME = "check_for_updates"
-    const val CHECK_UPDATES_FROM_PLAY_STORE_METHOD_NAME = "check_updates_from_play_store"
+    const val CHECK_FOR_UPDATES_FROM_PLAY_STORE_METHOD_NAME = "check_for_updates_from_play_store"
+    
+    const val REQUIREMENTS_CHANNEL_NAME = "flutter_prince_of_versions_requirements"
+    const val CHECK_REQUIREMENT_METHOD_NAME = "check_requirement"
 }

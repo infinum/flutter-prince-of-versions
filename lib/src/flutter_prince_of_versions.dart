@@ -68,7 +68,7 @@ class FlutterPrinceOfVersions {
       return;
     }
     _channel.setMethodCallHandler((call) => _handleAndroidInvocations(call, callback));
-    await _channel.invokeMethod(Constants.checkUpdatesFromPlayStoreMethodName, [url]);
+    await _channel.invokeMethod(Constants.checkForUpdatesFromPlayStoreMethodName, [url]);
   }
 
   static Future<void> _handleAndroidInvocations(MethodCall call, Callback callback) async {

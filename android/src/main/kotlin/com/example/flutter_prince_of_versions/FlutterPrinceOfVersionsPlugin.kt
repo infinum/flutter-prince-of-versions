@@ -49,7 +49,7 @@ class FlutterPrinceOfVersionsPlugin : FlutterPlugin, MethodCallHandler, Activity
                 val requirements = argsList.last() as List<String>
                 checkForUpdates(url, requirements, result)
             }
-            Constants.CHECK_UPDATES_FROM_PLAY_STORE_METHOD_NAME -> {
+            Constants.CHECK_FOR_UPDATES_FROM_PLAY_STORE_METHOD_NAME -> {
                 val argsList = call.arguments as List<*>
                 val url = argsList.first() as String
                 checkForUpdatesFromPlayStore(url)
@@ -110,7 +110,7 @@ class FlutterPrinceOfVersionsPlugin : FlutterPlugin, MethodCallHandler, Activity
                 var requirementResult = false
 
                 activity.runOnUiThread {
-                    requirementsChannel.invokeMethod(Constants.REQUIREMENTS_METHOD_NAME, listOf(it, value), object : Result {
+                    requirementsChannel.invokeMethod(Constants.CHECK_REQUIREMENT_METHOD_NAME, listOf(it, value), object : Result {
                     override fun success(result: Any?) {
                         requirementResult = result as Boolean
                     }
