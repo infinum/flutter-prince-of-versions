@@ -65,7 +65,7 @@ class FlutterPrinceOfVersions {
   /// [callback] - your implementation of possible update states.
   static Future<void> checkForUpdatesFromGooglePlay(String url, Callback callback) async {
     if (!Platform.isAndroid) {
-      throw UnsupportedError('This method is only supported on Android');
+      throw UnsupportedError('This method is only supported on Android.');
     }
     _channel.setMethodCallHandler((call) => _handleAndroidInvocations(call, callback));
     await _channel.invokeMethod(Constants.checkForUpdatesFromPlayStoreMethodName, [
