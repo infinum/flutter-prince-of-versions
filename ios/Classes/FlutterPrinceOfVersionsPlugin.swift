@@ -63,17 +63,18 @@ public class FlutterPrinceOfVersionsPlugin: NSObject, FlutterPlugin {
             povOptions.addRequirement(key: requirementKey) { (requirementValue) -> Bool in
                 var requirementResult = false
 
+                self.dispatchGroup.enter()
                 self.dispatchQueue.async {
-                    self.dispatchGroup.enter()
                     FlutterPrinceOfVersionsPlugin.requirementsChannel?.invokeMethod(Constants.Flutter.checkRequirementMethodName,
                                                                                arguments: [requirementKey, requirementValue],
                                                                                result: { (result) in
                         requirementResult = result as! Bool
                         self.dispatchGroup.leave()
                     })
-                    self.dispatchGroup.wait(timeout: .distantFuture)
+                    
                 }
-
+                _=self.dispatchGroup.wait(timeout: .distantFuture)
+                
                 return requirementResult
             }
         }
