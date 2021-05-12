@@ -63,9 +63,9 @@ class FlutterPrinceOfVersions {
     return UpdateData.fromMap(data);
   }
 
-  /// Checks Google Play Store data for your application. If your application is not on Play Store, [Callback.error] is called.
+  /// Checks Google Play data for this application. If your application is not on Google Play, [Callback.error] is called.
   /// Brings native Android update alert. Depending on different update states, different callback methods are triggered.
-  /// [url] - url to your application on the Google Play Store.
+  /// [url] - url to your application on the Google Play.
   /// [callback] - your implementation of possible update states.
   static Future<void> checkForUpdatesFromGooglePlay(
       String url, Callback callback) async {
@@ -74,10 +74,11 @@ class FlutterPrinceOfVersions {
     }
     _channel.setMethodCallHandler(
         (call) => _handleAndroidInvocations(call, callback));
-    await _channel
-        .invokeMethod(Constants.checkForUpdatesFromPlayStoreMethodName, [
-      url,
-    ]);
+
+    await _channel.invokeMethod(
+      Constants.checkForUpdatesFromGooglePlayMethodName,
+      [url],
+    );
   }
 
   static Future<void> _handleAndroidInvocations(

@@ -82,7 +82,7 @@ class _MyAppState extends State<MyApp> {
           ),
           SizedBox(height: 20),
           CupertinoButton.filled(
-            child: Text('Play Store test'),
+            child: Text('Google Play test'),
             onPressed: _checkForUpdatesFromGooglePlay,
           ),
         ],

@@ -42,8 +42,8 @@ class Constants {
   static const checkForUpdatesMethodName = "check_for_updates";
   static const checkForUpdatesFromAppStoreMethodName =
       "check_for_updates_from_app_store";
-  static const checkForUpdatesFromPlayStoreMethodName =
-      "check_for_updates_from_play_store";
+  static const checkForUpdatesFromGooglePlayMethodName =
+      "check_for_updates_from_google_play";
 
   static const requirementsChannelName =
       "flutter_prince_of_versions_requirements";

@@ -52,7 +52,7 @@ class FlutterPrinceOfVersionsPlugin : FlutterPlugin, MethodCallHandler, Activity
                 val requirementChecks = argsList[3] as List<String>
                 checkForUpdates(url, requirementChecks, result)
             }
-            Constants.CHECK_FOR_UPDATES_FROM_PLAY_STORE_METHOD_NAME -> {
+            Constants.CHECK_FOR_UPDATES_FROM_GOOGLE_PLAY_METHOD_NAME -> {
                 val argsList = call.arguments as List<*>
                 val url = argsList[0] as String
                 checkForUpdatesFromPlayStore(url)
