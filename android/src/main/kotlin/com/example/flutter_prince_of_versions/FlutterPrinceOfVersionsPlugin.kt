@@ -14,8 +14,9 @@ import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 
 class FlutterPrinceOfVersionsPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
@@ -109,25 +110,25 @@ class FlutterPrinceOfVersionsPlugin : FlutterPlugin, MethodCallHandler, Activity
 
         requirementChecks.forEach { requirementKey ->
             updater.addRequirementsChecker(requirementKey) { requirementValue ->
-                var requirementResult = false
-
-                activity.runOnUiThread {
-                    requirementsChannel.invokeMethod(
-                            Constants.CHECK_REQUIREMENT_METHOD_NAME,
-                            listOf(requirementKey, requirementValue), object : Result {
-                    override fun success(result: Any?) {
-                        requirementResult = result as Boolean
+                runBlocking<Boolean> {
+                    suspendCoroutine<Boolean> { cont ->
+                        activity.runOnUiThread {
+                            requirementsChannel.invokeMethod(
+                                    Constants.CHECK_REQUIREMENT_METHOD_NAME,
+                                    listOf(requirementKey, requirementValue), object : Result {
+                                override fun success(result: Any?) {
+                                    cont.resume(result as Boolean)
+                                }
+                                override fun error(errorCode: String?, errorMessage: String?, errorDetails: Any?) {
+                                    cont.resume(false)
+                                }
+                                override fun notImplemented() {
+                                    cont.resume(false)
+                                }
+                            })
+                        }
                     }
-                    override fun error(errorCode: String?, errorMessage: String?, errorDetails: Any?) {}
-                    override fun notImplemented() {}
-                    })
                 }
-
-                runBlocking {
-                    delay(500L)
-                }
-
-                requirementResult
             }
         }
         val loader: Loader = NetworkLoader(url)
