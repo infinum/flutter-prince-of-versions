@@ -52,7 +52,7 @@ and prompt user about a new version. Whenever a status of the update is changed,
 
 ```dart
 final Callback callback = MyCallback(context);
-await FlutterPrinceOfVersions.checkForUpdatesFromGooglePlay(callback);
+await FlutterPrinceOfVersions.checkForUpdatesFromGooglePlay('Google Play url', callback);
 ```
 
 ```dart
@@ -85,6 +85,11 @@ class MyCallback extends Callback {
 ```
 
 In this example, we created a class and implemented an error method. When `checkForUpdatesFromGooglePlay` triggers an error method, an alert dialog will show.
+
+### R8 / ProGuard
+
+If you are using R8 or ProGuard add the options from
+[this file](https://github.com/infinum/Android-Prince-of-Versions/blob/master/prince-of-versions/prince-of-versions.pro).
 
 ## JSON file formatting
 
