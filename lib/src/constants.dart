@@ -40,9 +40,12 @@ class Constants {
 
   static const channelName = "flutter_prince_of_versions";
   static const checkForUpdatesMethodName = "check_for_updates";
-  static const checkForUpdatesFromAppStoreMethodName = "check_for_updates_from_app_store";
-  static const checkForUpdatesFromPlayStoreMethodName = "check_for_updates_from_play_store";
+  static const checkForUpdatesFromAppStoreMethodName =
+      "check_for_updates_from_app_store";
+  static const checkForUpdatesFromPlayStoreMethodName =
+      "check_for_updates_from_play_store";
 
-  static const requirementsChannelName = "flutter_prince_of_versions_requirements";
+  static const requirementsChannelName =
+      "flutter_prince_of_versions_requirements";
   static const checkRequirementMethodName = "check_requirement";
 }

@@ -23,11 +23,22 @@ class _MyAppState extends State<MyApp> {
     String url = Platform.isAndroid ? androidUrl : iOSUrl;
 
     try {
-      final updateData = await FlutterPrinceOfVersions.checkForUpdates(url: url);
+      final updateData = await FlutterPrinceOfVersions.checkForUpdates(
+        url: url,
+        requirementChecks: {
+          'region': (value) {
+            return value == 'hr';
+          },
+          'bluetooth': (value) {
+            return value == '5.0';
+          }
+        },
+      );
 
       print('Update status: ${updateData.status}');
       print('Installed version: ${updateData.updateInfo.installedVersion}');
-      print('Last available major version: ${updateData.updateInfo.lastVersionAvailable?.major}');
+      print(
+          'Last available major version: ${updateData.updateInfo.lastVersionAvailable?.major}');
       print('Metadata: ${updateData.metadata}');
     } catch (error) {
       print(error);
@@ -35,14 +46,16 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future<void> _checkForUpdatesFromAppStore() async {
-    final updateData = await FlutterPrinceOfVersions.checkForUpdatesFromAppStore();
+    final updateData =
+        await FlutterPrinceOfVersions.checkForUpdatesFromAppStore();
     print('Update status: ${updateData.status}');
     print('Current version: ${updateData.version.major}');
   }
 
   Future<void> _checkForUpdatesFromGooglePlay() async {
     final Callback callback = MyCallback(context);
-    await FlutterPrinceOfVersions.checkForUpdatesFromGooglePlay("http://pastebin.com/raw/QFGjJrLP", callback);
+    await FlutterPrinceOfVersions.checkForUpdatesFromGooglePlay(
+        "http://pastebin.com/raw/QFGjJrLP", callback);
   }
 
   @override

@@ -13,7 +13,8 @@ class FlutterPrinceOfVersions {
   FlutterPrinceOfVersions._();
 
   static const _channel = MethodChannel(Constants.channelName);
-  static const _requirementsChannel = MethodChannel(Constants.requirementsChannelName);
+  static const _requirementsChannel =
+      MethodChannel(Constants.requirementsChannelName);
 
   /// Returns parsed JSON data modeled as [UpdateData].
   /// [url] to the JSON.
@@ -29,8 +30,10 @@ class FlutterPrinceOfVersions {
     Map<String, String> httpHeaderFields = const {},
     Map<String, RequirementCheck> requirementChecks = const {},
   }) async {
-    _requirementsChannel.setMethodCallHandler((call) => _handleRequirementsChannelMethodCall(call, requirementChecks));
-    final data = await _channel.invokeMethod(Constants.checkForUpdatesMethodName, [
+    _requirementsChannel.setMethodCallHandler((call) =>
+        _handleRequirementsChannelMethodCall(call, requirementChecks));
+    final data =
+        await _channel.invokeMethod(Constants.checkForUpdatesMethodName, [
       url,
       shouldPinCertificates,
       httpHeaderFields,
@@ -52,7 +55,8 @@ class FlutterPrinceOfVersions {
     if (!Platform.isIOS) {
       throw UnsupportedError('This method is only supported on iOS.');
     }
-    final data = await _channel.invokeMethod(Constants.checkForUpdatesFromAppStoreMethodName, [
+    final data = await _channel
+        .invokeMethod(Constants.checkForUpdatesFromAppStoreMethodName, [
       trackPhasedRelease,
       notifyOnce,
     ]) as Map<dynamic, dynamic>;
@@ -63,34 +67,43 @@ class FlutterPrinceOfVersions {
   /// Brings native Android update alert. Depending on different update states, different callback methods are triggered.
   /// [url] - url to your application on the Google Play Store.
   /// [callback] - your implementation of possible update states.
-  static Future<void> checkForUpdatesFromGooglePlay(String url, Callback callback) async {
+  static Future<void> checkForUpdatesFromGooglePlay(
+      String url, Callback callback) async {
     if (!Platform.isAndroid) {
       throw UnsupportedError('This method is only supported on Android.');
     }
-    _channel.setMethodCallHandler((call) => _handleAndroidInvocations(call, callback));
-    await _channel.invokeMethod(Constants.checkForUpdatesFromPlayStoreMethodName, [
+    _channel.setMethodCallHandler(
+        (call) => _handleAndroidInvocations(call, callback));
+    await _channel
+        .invokeMethod(Constants.checkForUpdatesFromPlayStoreMethodName, [
       url,
     ]);
   }
 
-  static Future<void> _handleAndroidInvocations(MethodCall call, Callback callback) async {
+  static Future<void> _handleAndroidInvocations(
+      MethodCall call, Callback callback) async {
     if (call.method == Constants.canceled) {
       callback.canceled();
     } else if (call.method == Constants.mandatoryUpdateNotAvailable) {
       final arguments = call.arguments as List<dynamic>;
       final arg0 = arguments[0] as Map<dynamic, dynamic>;
       final arg1 = arguments[1] as Map<dynamic, dynamic>;
-      callback.mandatoryUpdateNotAvailable(QueenOfVersionsUpdateData.fromMap(arg0), UpdateInfo.fromMap(arg1));
+      callback.mandatoryUpdateNotAvailable(
+          QueenOfVersionsUpdateData.fromMap(arg0), UpdateInfo.fromMap(arg1));
     } else if (call.method == Constants.downloaded) {
-      callback.downloaded(QueenOfVersionsUpdateData.fromMap(call.arguments as Map<dynamic, dynamic>));
+      callback.downloaded(QueenOfVersionsUpdateData.fromMap(
+          call.arguments as Map<dynamic, dynamic>));
     } else if (call.method == Constants.downloading) {
-      callback.downloading(QueenOfVersionsUpdateData.fromMap(call.arguments as Map<dynamic, dynamic>));
+      callback.downloading(QueenOfVersionsUpdateData.fromMap(
+          call.arguments as Map<dynamic, dynamic>));
     } else if (call.method == Constants.error) {
       callback.error(call.arguments as String);
     } else if (call.method == Constants.installed) {
-      callback.installed(QueenOfVersionsUpdateData.fromMap(call.arguments as Map<dynamic, dynamic>));
+      callback.installed(QueenOfVersionsUpdateData.fromMap(
+          call.arguments as Map<dynamic, dynamic>));
     } else if (call.method == Constants.installing) {
-      callback.installing(QueenOfVersionsUpdateData.fromMap(call.arguments as Map<dynamic, dynamic>));
+      callback.installing(QueenOfVersionsUpdateData.fromMap(
+          call.arguments as Map<dynamic, dynamic>));
     } else if (call.method == Constants.updateAccepted) {
       final arguments = call.arguments as List<dynamic>;
       final arg0 = arguments[0] as Map<dynamic, dynamic>;
@@ -117,7 +130,8 @@ class FlutterPrinceOfVersions {
         arg != null ? UpdateInfo.fromMap(arg) : null,
       );
     } else if (call.method == Constants.onPending) {
-      callback.onPending(QueenOfVersionsUpdateData.fromMap(call.arguments as Map<dynamic, dynamic>));
+      callback.onPending(QueenOfVersionsUpdateData.fromMap(
+          call.arguments as Map<dynamic, dynamic>));
     }
   }
 

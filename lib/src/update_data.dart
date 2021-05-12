@@ -47,9 +47,13 @@ class UpdateInfo {
     final requiredVersionMap = map[Constants.requiredVersion];
 
     return UpdateInfo(
-      lastVersionAvailable: latestVersionAvailableMap != null ? Version.fromMap(latestVersionAvailableMap) : null,
+      lastVersionAvailable: latestVersionAvailableMap != null
+          ? Version.fromMap(latestVersionAvailableMap)
+          : null,
       installedVersion: Version.fromMap(map[Constants.installedVersion]),
-      requiredVersion: requiredVersionMap != null ? Version.fromMap(requiredVersionMap) : null,
+      requiredVersion: requiredVersionMap != null
+          ? Version.fromMap(requiredVersionMap)
+          : null,
     );
   }
 }
@@ -150,7 +154,8 @@ class QueenOfVersionsUpdateData {
     return QueenOfVersionsUpdateData(
       versionCode: map[Constants.versionCode] as int?,
       updatePriority: map[Constants.updatePriority] as int?,
-      clientVersionStalenessDays: map[Constants.clientVersionStalenessDays] as int?,
+      clientVersionStalenessDays:
+          map[Constants.clientVersionStalenessDays] as int?,
     );
   }
 }
