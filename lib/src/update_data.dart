@@ -1,30 +1,35 @@
 part of flutter_prince_of_versions;
 
-/// Update status of the application.
+/// Application update status.
 enum UpdateStatus {
-  noUpdateAvailable,
-  requiredUpdateNeeded,
+  /// Application update is available.
   newUpdateAvailable,
+
+  /// Application update is not available.
+  noUpdateAvailable,
+
+  /// Application updates is available, the user should install it before using the application.
+  requiredUpdateNeeded,
 }
 
-class UpdateStatusMapper {
-  UpdateStatusMapper._();
+class _UpdateStatusMapper {
+  _UpdateStatusMapper._();
 
   static UpdateStatus map(dynamic value) {
     final rawUpdateStatus = value as String;
     switch (rawUpdateStatus) {
-      case Constants.updateAvailable:
+      case Constants.newUpdateAvailable:
         return UpdateStatus.newUpdateAvailable;
-      case Constants.noUpdate:
+      case Constants.noUpdateAvailable:
         return UpdateStatus.noUpdateAvailable;
-      case Constants.requiredUpdate:
+      case Constants.requiredUpdateNeeded:
         return UpdateStatus.requiredUpdateNeeded;
     }
     throw Error();
   }
 }
 
-/// Information about the app.
+/// Information about application and its updates.
 @immutable
 class UpdateInfo {
   const UpdateInfo({
@@ -33,32 +38,33 @@ class UpdateInfo {
     this.requiredVersion,
   });
 
-  /// Last version that can be installed.
+  /// Last version of the application.
   final Version? lastVersionAvailable;
 
-  /// Current installed version.
+  /// Current installed application version.
   final Version installedVersion;
 
-  /// Minimum required version.
+  /// Minimum required version of the application.
   final Version? requiredVersion;
 
-  factory UpdateInfo.fromMap(Map<dynamic, dynamic> map) {
-    final latestVersionAvailableMap = map[Constants.lastVersionAvailable];
-    final requiredVersionMap = map[Constants.requiredVersion];
+  factory UpdateInfo._fromMap(Map<dynamic, dynamic> map) {
+    final rawLatestVersionAvailable = map[Constants.lastVersionAvailable];
+    final rawInstalledVersion = map[Constants.installedVersion];
+    final rawRequiredVersion = map[Constants.requiredVersion];
 
     return UpdateInfo(
-      lastVersionAvailable: latestVersionAvailableMap != null
-          ? Version.fromMap(latestVersionAvailableMap)
+      lastVersionAvailable: rawLatestVersionAvailable != null
+          ? Version._fromMap(rawLatestVersionAvailable)
           : null,
-      installedVersion: Version.fromMap(map[Constants.installedVersion]),
-      requiredVersion: requiredVersionMap != null
-          ? Version.fromMap(requiredVersionMap)
+      installedVersion: Version._fromMap(rawInstalledVersion),
+      requiredVersion: rawRequiredVersion != null
+          ? Version._fromMap(rawRequiredVersion)
           : null,
     );
   }
 }
 
-/// Version of the app. On Android only major is used.
+/// Application Version information.
 @immutable
 class Version {
   const Version({
@@ -68,19 +74,19 @@ class Version {
     this.build,
   });
 
-  /// App major version number. iOS and Android.
+  /// Application major version number. iOS and Android.
   final int major;
 
-  /// App minor version number. iOS only.
+  /// Application minor version number. iOS only.
   final int? minor;
 
-  /// App patch version number. iOS only.
+  /// Application patch version number. iOS only.
   final int? patch;
 
-  /// App build version number. iOS only.
+  /// Application build version number. iOS only.
   final int? build;
 
-  factory Version.fromMap(Map<dynamic, dynamic> map) {
+  factory Version._fromMap(Map<dynamic, dynamic> map) {
     return Version(
       major: map[Constants.major] as int,
       minor: map[Constants.minor] as int?,
@@ -90,13 +96,22 @@ class Version {
   }
 
   String toString() {
-    return '$major.$minor.$patch';
+    final buffer = StringBuffer();
+    buffer.write(major);
+    if (minor != null) {
+      buffer.write('.$minor');
+    }
+    if (patch != null) {
+      buffer.write('.$patch');
+    }
+    if (build != null) {
+      buffer.write(' build:$build');
+    }
+    return buffer.toString();
   }
 }
 
-/// Whole data about the application form JSON.
-/// Can be used in custom flows. For example:
-/// If UpdateInfo.lastAvailableVersion.major > 2 don't do anything.
+/// Application update information.
 @immutable
 class UpdateData {
   const UpdateData({
@@ -117,11 +132,11 @@ class UpdateData {
 
   final Map<String, dynamic> metadata;
 
-  factory UpdateData.fromMap(Map<dynamic, dynamic> map) {
+  factory UpdateData._fromMap(Map<dynamic, dynamic> map) {
     return UpdateData(
-      status: UpdateStatusMapper.map(map[Constants.status]),
-      version: Version.fromMap(map[Constants.version]),
-      updateInfo: UpdateInfo.fromMap(map[Constants.updateInfo]),
+      status: _UpdateStatusMapper.map(map[Constants.status]),
+      version: Version._fromMap(map[Constants.version]),
+      updateInfo: UpdateInfo._fromMap(map[Constants.updateInfo]),
       metadata: _mapMetadata(map[Constants.metadata]),
     );
   }
@@ -132,7 +147,7 @@ class UpdateData {
   }
 }
 
-/// Data about the application form Google Store.
+/// Application update information, obtained from Google Play.
 @immutable
 class QueenOfVersionsUpdateData {
   const QueenOfVersionsUpdateData({
@@ -147,10 +162,10 @@ class QueenOfVersionsUpdateData {
   /// Application update priority.
   final int? updatePriority;
 
-  /// Number of days since the last application version was uploaded to the Store.
+  /// Number of days since the last application version was uploaded to Google Play.
   final int? clientVersionStalenessDays;
 
-  factory QueenOfVersionsUpdateData.fromMap(Map<dynamic, dynamic> map) {
+  factory QueenOfVersionsUpdateData._fromMap(Map<dynamic, dynamic> map) {
     return QueenOfVersionsUpdateData(
       versionCode: map[Constants.versionCode] as int?,
       updatePriority: map[Constants.updatePriority] as int?,

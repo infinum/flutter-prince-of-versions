@@ -3,9 +3,9 @@ part of flutter_prince_of_versions;
 class Constants {
   Constants._();
 
-  static const updateAvailable = "update-available";
-  static const noUpdate = "no-update";
-  static const requiredUpdate = "required-update";
+  static const newUpdateAvailable = "newUpdateAvailable";
+  static const noUpdateAvailable = "noUpdateAvailable";
+  static const requiredUpdateNeeded = "requiredUpdateNeeded";
 
   static const major = "major";
   static const minor = "minor";

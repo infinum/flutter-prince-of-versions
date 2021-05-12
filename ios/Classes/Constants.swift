@@ -5,9 +5,9 @@ enum Constants {
     static let requirementCheck = "REQUIREMENT_CHECK"
     
     enum UpdateStatus {
-        static let updateAvailable = "update-available"
-        static let noUpdate = "no-update"
-        static let requiredUpdate = "required-update"
+        static let newUpdateAvailable = "newUpdateAvailable"
+        static let noUpdateAvailable = "noUpdateAvailable"
+        static let requiredUpdateNeeded = "requiredUpdateNeeded"
     }
 
     enum Version {

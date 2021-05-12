@@ -18,7 +18,6 @@ import kotlinx.coroutines.runBlocking
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
-
 class FlutterPrinceOfVersionsPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
 
     private lateinit var channel: MethodChannel
@@ -45,11 +44,11 @@ class FlutterPrinceOfVersionsPlugin : FlutterPlugin, MethodCallHandler, Activity
     override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
         when (call.method) {
             Constants.CHECK_FOR_UPDATES_METHOD_NAME -> {
-                val argsList = call.arguments as List<*>
-                val url = argsList[0] as String
-                // argument1, and argument2 are not applicable on Android
+                val args = call.arguments as List<*>
+                val url = args[0] as String
+                // arg1, and arg2 are not used on Android
                 @Suppress("UNCHECKED_CAST")
-                val requirementChecks = argsList[3] as List<String>
+                val requirementChecks = args[3] as List<String>
                 checkForUpdates(url, requirementChecks, result)
             }
             Constants.CHECK_FOR_UPDATES_FROM_GOOGLE_PLAY_METHOD_NAME -> {
@@ -101,7 +100,7 @@ class FlutterPrinceOfVersionsPlugin : FlutterPlugin, MethodCallHandler, Activity
                 }
                 .build()
 
-        queenOfVersions.checkForUpdates(loader, callback);
+        queenOfVersions.checkForUpdates(loader, callback)
 
     }
 
@@ -132,15 +131,15 @@ class FlutterPrinceOfVersionsPlugin : FlutterPlugin, MethodCallHandler, Activity
             }
         }
         val loader: Loader = NetworkLoader(url)
-        val callback: UpdaterCallback = object : UpdaterCallback {
+
+        updater.build(context).checkForUpdates(loader, object : UpdaterCallback {
             override fun onSuccess(result: UpdateResult) {
                 flutterResult.success(result.toMap())
             }
-            override fun onError(throwable: Throwable) {
-                flutterResult.error("", throwable.localizedMessage, null)
+            override fun onError(error: Throwable) {
+                flutterResult.error("", error.localizedMessage, null)
             }
-        }
-        updater.build(context).checkForUpdates(loader, callback)
+        })
     }
 
     override fun onDetachedFromActivity() {
@@ -163,8 +162,6 @@ class FlutterPrinceOfVersionsPlugin : FlutterPlugin, MethodCallHandler, Activity
     }
 
 }
-
-
 
 fun QueenOfVersionsInAppUpdateInfo.toMap(): Map<String, Int?> {
     return mapOf(
@@ -191,12 +188,11 @@ fun UpdateInfo.toMap(): Map<String, Any?> {
     )
 }
 
-
 fun UpdateStatus.toMap(): String {
     return when(this) {
-        UpdateStatus.NEW_UPDATE_AVAILABLE -> Constants.UPDATE_AVAILABLE
-        UpdateStatus.NO_UPDATE_AVAILABLE -> Constants.NO_UPDATE
-        UpdateStatus.REQUIRED_UPDATE_NEEDED -> Constants.REQUIRED_UPDATE
+        UpdateStatus.NEW_UPDATE_AVAILABLE -> Constants.NEW_UPDATE_AVAILABLE
+        UpdateStatus.NO_UPDATE_AVAILABLE -> Constants.NO_UPDATE_AVAILABLE
+        UpdateStatus.REQUIRED_UPDATE_NEEDED -> Constants.REQUIRED_UPDATE_NEEDED
     }
 }
 

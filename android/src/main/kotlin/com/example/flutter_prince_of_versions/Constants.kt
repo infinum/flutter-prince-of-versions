@@ -1,9 +1,9 @@
 package com.example.flutter_prince_of_versions
 
 object Constants {
-    const val UPDATE_AVAILABLE = "update-available"
-    const val NO_UPDATE = "no-update"
-    const val REQUIRED_UPDATE = "required-update"
+    const val NEW_UPDATE_AVAILABLE = "newUpdateAvailable"
+    const val NO_UPDATE_AVAILABLE = "noUpdateAvailable"
+    const val REQUIRED_UPDATE_NEEDED = "requiredUpdateNeeded"
 
     const val MAJOR = "major"
 

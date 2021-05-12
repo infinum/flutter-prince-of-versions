@@ -36,7 +36,7 @@ public class FlutterPrinceOfVersionsPlugin: NSObject, FlutterPlugin {
             let notifyOnce = args[1] as! Bool
             checkForUpdatesFromAppStore(
                 trackPhaseRelease: trackPhaseRelease,
-                notificationFrequency: notifyOnce ? .once : .always,
+                notifyOnce: notifyOnce,
                 result: result
             )
         }
@@ -97,10 +97,11 @@ public class FlutterPrinceOfVersionsPlugin: NSObject, FlutterPlugin {
     }
 
     func checkForUpdatesFromAppStore(trackPhaseRelease: Bool,
-                                     notificationFrequency: NotificationType,
+                                     notifyOnce: Bool,
                                      result: @escaping FlutterResult) {
+        
         PrinceOfVersions.checkForUpdateFromAppStore(trackPhaseRelease: trackPhaseRelease,
-                                                    notificationFrequency: notificationFrequency) { response in
+                                                    notificationFrequency: notifyOnce ? .once : .always) { response in
             switch response {
             case .success(let appStoreResult):
                 let data = AppStoreUpdateData(status: appStoreResult.updateState,
@@ -164,12 +165,11 @@ extension UpdateStatus {
     func toString() -> String {
         switch self {
         case .newUpdateAvailable:
-            return Constants.UpdateStatus
-                .updateAvailable
+            return Constants.UpdateStatus.newUpdateAvailable
         case .noUpdateAvailable:
-            return Constants.UpdateStatus.noUpdate
+            return Constants.UpdateStatus.noUpdateAvailable
         case .requiredUpdateNeeded:
-            return Constants.UpdateStatus.requiredUpdate
+            return Constants.UpdateStatus.requiredUpdateNeeded
         }
     }
 }

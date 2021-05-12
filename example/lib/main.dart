@@ -37,8 +37,7 @@ class _MyAppState extends State<MyApp> {
 
       print('Update status: ${updateData.status}');
       print('Installed version: ${updateData.updateInfo.installedVersion}');
-      print(
-          'Last available major version: ${updateData.updateInfo.lastVersionAvailable?.major}');
+      print('Last version: ${updateData.updateInfo.lastVersionAvailable}');
       print('Metadata: ${updateData.metadata}');
     } catch (error) {
       print(error);
@@ -49,13 +48,13 @@ class _MyAppState extends State<MyApp> {
     final updateData =
         await FlutterPrinceOfVersions.checkForUpdatesFromAppStore();
     print('Update status: ${updateData.status}');
-    print('Current version: ${updateData.version.major}');
+    print('Current version: ${updateData.version}');
   }
 
   Future<void> _checkForUpdatesFromGooglePlay() async {
-    final Callback callback = MyCallback(context);
+    final callback = MyCallback(context);
     await FlutterPrinceOfVersions.checkForUpdatesFromGooglePlay(
-        "http://pastebin.com/raw/QFGjJrLP", callback);
+        "Google Play url", callback);
   }
 
   @override
@@ -77,12 +76,12 @@ class _MyAppState extends State<MyApp> {
           ),
           SizedBox(height: 20),
           CupertinoButton.filled(
-            child: Text('App Store test'),
+            child: Text('Check App Store updates'),
             onPressed: _checkForUpdatesFromAppStore,
           ),
           SizedBox(height: 20),
           CupertinoButton.filled(
-            child: Text('Google Play test'),
+            child: Text('Check Google Play updates'),
             onPressed: _checkForUpdatesFromGooglePlay,
           ),
         ],
