@@ -46,7 +46,7 @@ class FlutterPrinceOfVersionsPlugin : FlutterPlugin, MethodCallHandler, Activity
             Constants.CHECK_FOR_UPDATES_METHOD_NAME -> {
                 val args = call.arguments as List<*>
                 val url = args[0] as String
-                // arg1, and arg2 are not used on Android
+                // arg1 and arg2 are not used on Android
                 @Suppress("UNCHECKED_CAST")
                 val requirementChecks = args[3] as List<String>
                 checkForUpdates(url, requirementChecks, result)
@@ -54,11 +54,12 @@ class FlutterPrinceOfVersionsPlugin : FlutterPlugin, MethodCallHandler, Activity
             Constants.CHECK_FOR_UPDATES_FROM_GOOGLE_PLAY_METHOD_NAME -> {
                 val argsList = call.arguments as List<*>
                 val url = argsList[0] as String
-                checkForUpdatesFromPlayStore(url)
+                checkForUpdatesFromGooglePlay(url)
             }
         }
     }
-    private fun checkForUpdatesFromPlayStore(url: String) {
+
+    private fun checkForUpdatesFromGooglePlay(url: String) {
         val queenOfVersions = QueenOfVersions.Builder()
                 .build(this.activity as FragmentActivity)
 
@@ -101,7 +102,6 @@ class FlutterPrinceOfVersionsPlugin : FlutterPlugin, MethodCallHandler, Activity
                 .build()
 
         queenOfVersions.checkForUpdates(loader, callback)
-
     }
 
     private fun checkForUpdates(url: String, requirementChecks: List<String>, @NonNull flutterResult: Result) {
@@ -130,6 +130,7 @@ class FlutterPrinceOfVersionsPlugin : FlutterPlugin, MethodCallHandler, Activity
                 }
             }
         }
+
         val loader: Loader = NetworkLoader(url)
 
         updater.build(context).checkForUpdates(loader, object : UpdaterCallback {
@@ -176,7 +177,7 @@ fun UpdateResult.toMap(): Map<String, Any?> {
             Constants.STATUS to status.toMap(),
             Constants.VERSION to mapVersion(updateVersion),
             Constants.UPDATE_INFO to info.toMap(),
-            Constants.META to metadata
+            Constants.METADATA to metadata
     )
 }
 

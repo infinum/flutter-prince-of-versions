@@ -14,7 +14,7 @@ object Constants {
     const val STATUS = "status"
     const val VERSION = "version"
     const val UPDATE_INFO = "updateInfo"
-    const val META = "metadata"
+    const val METADATA = "metadata"
 
     const val VERSION_CODE = "versionCode"
     const val UPDATE_PRIORITY = "updatePriority"

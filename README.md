@@ -39,15 +39,15 @@ For example you can always update the app when a new minor version is available.
 
 ### Automatic check with data from the App Store
 
-If you don't want to manage the JSON configuration file required by above mentioned methods, you can use `checkForUpdatesFromStore`.
+If you don't want to manage the JSON configuration file required by above mentioned methods, you can use `checkForUpdatesFromAppStore`.
 This method will automatically get your app BundleID and it will return version info fetched from the App Store.
 
 However, `updateStatus` result can only assume values `UpdateStatus.noUpdateAvailable` and `UpdateStatus.newUpdateAvailable`.
-It is not possible to check if update is mandatory by using this method and data provided by the AppStore.
+It is not possible to check if update is mandatory by using this method and data provided by the App Store.
 
 ### Automatic check with data from Google Play
 
-For checking updates on Google Play use `checkForUpdatesFromGooglePlay`. This method will automatically check Google Store
+For checking updates on Google Play use `checkForUpdatesFromGooglePlay`. This method will automatically check Google Play
 and prompt user about a new version. Whenever a status of the update is changed, your callback methods will be triggered.
 
 ```dart

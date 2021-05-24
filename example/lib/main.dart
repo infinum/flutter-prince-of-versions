@@ -16,8 +16,8 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  String androidUrl = 'https://pastebin.com/raw/FBMxHpN7';
-  String iOSUrl = 'https://pastebin.com/raw/0MfYmWGu';
+  static const androidUrl = 'https://pastebin.com/raw/FBMxHpN7';
+  static const iOSUrl = 'https://pastebin.com/raw/0MfYmWGu';
 
   Future<void> _checkForUpdates() async {
     String url = Platform.isAndroid ? androidUrl : iOSUrl;

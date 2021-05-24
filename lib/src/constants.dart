@@ -19,7 +19,6 @@ class Constants {
   static const status = "status";
   static const version = "version";
   static const updateInfo = "updateInfo";
-
   static const metadata = "metadata";
 
   static const versionCode = "versionCode";
