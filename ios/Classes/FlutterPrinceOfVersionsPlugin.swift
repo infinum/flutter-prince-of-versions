@@ -73,7 +73,7 @@ public class FlutterPrinceOfVersionsPlugin: NSObject, FlutterPlugin {
                     })
                     
                 }
-                _=self.dispatchGroup.wait(timeout: .distantFuture)
+                _ = self.dispatchGroup.wait(timeout: .distantFuture)
                 
                 return requirementResult
             }
@@ -119,7 +119,7 @@ public class FlutterPrinceOfVersionsPlugin: NSObject, FlutterPlugin {
 
 }
 
-struct AppStoreUpdateData: Encodable {
+struct AppStoreUpdateData {
 
     let status: UpdateStatus
     let version: Version
@@ -170,17 +170,6 @@ extension UpdateStatus {
             return Constants.UpdateStatus.noUpdateAvailable
         case .requiredUpdateNeeded:
             return Constants.UpdateStatus.requiredUpdateNeeded
-        }
-    }
-}
-
-extension UpdateStatus: Encodable {
-    public func encode(to encoder: Encoder) throws {
-        var container = encoder.singleValueContainer()
-        switch (self) {
-        case .noUpdateAvailable: try container.encode(toString())
-        case .requiredUpdateNeeded: try container.encode(toString())
-        case .newUpdateAvailable: try container.encode(toString())
         }
     }
 }
