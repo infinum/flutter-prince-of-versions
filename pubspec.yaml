@@ -1,12 +1,12 @@
 name: flutter_prince_of_versions
-description: Prince of Versions is a plugin which checks for application updates using configuration from some resource (Remote server, Google Play Store or App Store).
-version: 1.0.6
+description: Prince of Versions is a plugin which checks for application updates using configuration from some resource (Remote server, Google Play or App Store).
+version: 2.0.0
 repository: https://github.com/infinum/flutter-prince-of-versions
 homepage: https://github.com/infinum/flutter-prince-of-versions
 
 environment:
-  sdk: ">=2.6.0 <3.0.0"
-  flutter: ">=1.10.0"
+  sdk: '>=2.12.0 <3.0.0'
+  flutter: '>=2.0.0'
 
 dependencies:
   flutter:

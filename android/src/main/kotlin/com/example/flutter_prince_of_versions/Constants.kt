@@ -1,9 +1,9 @@
 package com.example.flutter_prince_of_versions
 
 object Constants {
-    const val UPDATE_AVAILABLE = "update-available"
-    const val NO_UPDATE = "no-update"
-    const val REQUIRED_UPDATE = "required-update"
+    const val NEW_UPDATE_AVAILABLE = "newUpdateAvailable"
+    const val NO_UPDATE_AVAILABLE = "noUpdateAvailable"
+    const val REQUIRED_UPDATE_NEEDED = "requiredUpdateNeeded"
 
     const val MAJOR = "major"
 
@@ -14,7 +14,7 @@ object Constants {
     const val STATUS = "status"
     const val VERSION = "version"
     const val UPDATE_INFO = "updateInfo"
-    const val META = "metadata"
+    const val METADATA = "metadata"
 
     const val VERSION_CODE = "versionCode"
     const val UPDATE_PRIORITY = "updatePriority"
@@ -33,8 +33,9 @@ object Constants {
     const val ON_PENDING = "on_pending"
 
     const val CHANNEL_NAME = "flutter_prince_of_versions"
-    const val REQUIREMENTS_CHANNEL_NAME = "flutter_prince_of_versions_requirements"
-    const val REQUIREMENTS_METHOD_NAME = "request_options"
     const val CHECK_FOR_UPDATES_METHOD_NAME = "check_for_updates"
-    const val CHECK_UPDATES_FROM_PLAY_STORE_METHOD_NAME = "check_updates_from_play_store"
+    const val CHECK_FOR_UPDATES_FROM_GOOGLE_PLAY_METHOD_NAME = "check_for_updates_from_google_play"
+    
+    const val REQUIREMENTS_CHANNEL_NAME = "flutter_prince_of_versions_requirements"
+    const val CHECK_REQUIREMENT_METHOD_NAME = "check_requirement"
 }

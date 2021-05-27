@@ -39,20 +39,20 @@ For example you can always update the app when a new minor version is available.
 
 ### Automatic check with data from the App Store
 
-If you don't want to manage the JSON configuration file required by above mentioned methods, you can use `checkForUpdatesFromStore`.
+If you don't want to manage the JSON configuration file required by above mentioned methods, you can use `checkForUpdatesFromAppStore`.
 This method will automatically get your app BundleID and it will return version info fetched from the App Store.
 
 However, `updateStatus` result can only assume values `UpdateStatus.noUpdateAvailable` and `UpdateStatus.newUpdateAvailable`.
-It is not possible to check if update is mandatory by using this method and data provided by the AppStore.
+It is not possible to check if update is mandatory by using this method and data provided by the App Store.
 
 ### Automatic check with data from Google Play
 
-For checking updates on Google Play use `checkForUpdatesFromGooglePlay`. This method will automatically check Google Store
+For checking updates on Google Play use `checkForUpdatesFromGooglePlay`. This method will automatically check Google Play
 and prompt user about a new version. Whenever a status of the update is changed, your callback methods will be triggered.
 
 ```dart
 final Callback callback = MyCallback(context);
-await FlutterPrinceOfVersions.checkForUpdatesFromGooglePlay(callback);
+await FlutterPrinceOfVersions.checkForUpdatesFromGooglePlay('Google Play url', callback);
 ```
 
 ```dart
@@ -85,6 +85,11 @@ class MyCallback extends Callback {
 ```
 
 In this example, we created a class and implemented an error method. When `checkForUpdatesFromGooglePlay` triggers an error method, an alert dialog will show.
+
+### R8 / ProGuard
+
+If you are using R8 or ProGuard add the options from
+[this file](https://github.com/infinum/Android-Prince-of-Versions/blob/master/prince-of-versions/prince-of-versions.pro).
 
 ## JSON file formatting
 

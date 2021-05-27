@@ -3,51 +3,50 @@ import UIKit
 import PrinceOfVersions
 
 public class FlutterPrinceOfVersionsPlugin: NSObject, FlutterPlugin {
-    static var flutterChannel: FlutterMethodChannel?
+    static var requirementsChannel: FlutterMethodChannel?
 
     let dispatchQueue = DispatchQueue(label: Constants.requirementCheck)
     let dispatchGroup = DispatchGroup()
 
     public static func register(with registrar: FlutterPluginRegistrar) {
         let channel = FlutterMethodChannel(name: Constants.Flutter.channelName, binaryMessenger: registrar.messenger())
-        flutterChannel = FlutterMethodChannel(name: Constants.Flutter.requirementsChannelName, binaryMessenger: registrar.messenger())
+        requirementsChannel = FlutterMethodChannel(name: Constants.Flutter.requirementsChannelName, binaryMessenger: registrar.messenger())
         let instance = FlutterPrinceOfVersionsPlugin()
         registrar.addMethodCallDelegate(instance, channel: channel)
     }
     
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
         if (call.method == Constants.Flutter.checkForUpdatesMethodName) {
-            let args = call.arguments as? [Any]
-            let requestOptions = args?.last as? [String]
-            let shouldPinCertificates = args?[1] as? Bool
-            let httpHeaderFields = args?[2] as? [String: String]
-            let url = args?.first as? String
+            let args = call.arguments as! [Any]
+            let url = args[0] as! String
+            let shouldPinCertificates = args[1] as! Bool
+            let httpHeaderFields = args[2] as! [String: String]
+            let requirementChecks = args[3] as! [String]
             checkForUpdates(
                 url: url,
                 shouldPinCertificates: shouldPinCertificates,
                 httpHeaderFields: httpHeaderFields,
-                requestOptions: requestOptions,
+                requirementChecks: requirementChecks,
                 result: result
             )
         }
-        else if (call.method == Constants.Flutter.checkUpdatesFromStoreMethodName) {
-            let args = call.arguments as? [Bool]
-            let trackPhaseRelease = args?.first ?? false
-            let notificationFrequency = args?.last ?? false
+        else if (call.method == Constants.Flutter.checkForUpdatesFromAppStoreMethodName) {
+            let args = call.arguments as! [Any]
+            let trackPhaseRelease = args[0] as! Bool
+            let notifyOnce = args[1] as! Bool
             checkForUpdatesFromAppStore(
                 trackPhaseRelease: trackPhaseRelease,
-                notificationFrequency: notificationFrequency ? .once : .always,
+                notifyOnce: notifyOnce,
                 result: result
             )
         }
 
     }
 
-    func checkForUpdates(url: String?, shouldPinCertificates: Bool?, httpHeaderFields: [String: String]?, requestOptions: [String]?, result: @escaping FlutterResult) {
-        guard let apiUrl = url,
-              let povUrl = URL(string: apiUrl)
+    func checkForUpdates(url: String, shouldPinCertificates: Bool, httpHeaderFields: [String: String], requirementChecks: [String], result: @escaping FlutterResult) {
+        guard let povUrl = URL(string: url)
         else {
-            result(FlutterError(code: Constants.Error.invalidURLCode,
+            result(FlutterError(code: "",
                                 message: Constants.Error.invalidURLMessage,
                                 details: nil)
             )
@@ -55,34 +54,32 @@ public class FlutterPrinceOfVersionsPlugin: NSObject, FlutterPlugin {
         }
 
         let povOptions = PoVRequestOptions()
-        povOptions.shouldPinCertificates = shouldPinCertificates ?? false
-        httpHeaderFields?.forEach { (key, value) in
+        povOptions.shouldPinCertificates = shouldPinCertificates
+        httpHeaderFields.forEach { (key, value) in
             povOptions.set(value: value as NSString, httpHeaderField: key as NSString)
         }
 
-        requestOptions?.forEach { (key) in
-            povOptions.addRequirement(key: key) { (apiValue) -> Bool in
+        requirementChecks.forEach { (requirementKey) in
+            povOptions.addRequirement(key: requirementKey) { (requirementValue) -> Bool in
                 var requirementResult = false
 
+                self.dispatchGroup.enter()
                 self.dispatchQueue.async {
-                    self.dispatchGroup.enter()
-                    FlutterPrinceOfVersionsPlugin.flutterChannel?.invokeMethod(Constants.Flutter.requirementsMethodName,
-                                                                               arguments: [key, apiValue],
+                    FlutterPrinceOfVersionsPlugin.requirementsChannel?.invokeMethod(Constants.Flutter.checkRequirementMethodName,
+                                                                               arguments: [requirementKey, requirementValue],
                                                                                result: { (result) in
-                        if let newResult = result as? Bool  {
-                            requirementResult = newResult
-                        }
+                        requirementResult = result as! Bool
                         self.dispatchGroup.leave()
                     })
-                    self.dispatchGroup.wait(timeout: .distantFuture)
+                    
                 }
-
+                _ = self.dispatchGroup.wait(timeout: .distantFuture)
+                
                 return requirementResult
             }
         }
 
         PrinceOfVersions.checkForUpdates(from: povUrl, options: povOptions)  { response in
-
             switch response.result {
             case .success(let updateResultData):
                 let data = UpdateData(status: updateResultData.updateState,
@@ -100,24 +97,17 @@ public class FlutterPrinceOfVersionsPlugin: NSObject, FlutterPlugin {
     }
 
     func checkForUpdatesFromAppStore(trackPhaseRelease: Bool,
-                                     notificationFrequency: NotificationType,
+                                     notifyOnce: Bool,
                                      result: @escaping FlutterResult) {
+        
         PrinceOfVersions.checkForUpdateFromAppStore(trackPhaseRelease: trackPhaseRelease,
-                                                    notificationFrequency: notificationFrequency) { response in
+                                                    notificationFrequency: notifyOnce ? .once : .always) { response in
             switch response {
             case .success(let appStoreResult):
                 let data = AppStoreUpdateData(status: appStoreResult.updateState,
                                               version: appStoreResult.updateVersion,
                                               updateInfo: appStoreResult.updateInfo)
-                do {
-                    result(try data.asDictionary())
-                } catch {
-                    result(FlutterError(code: "",
-                                        message: Constants.Error.dataParseError,
-                                        details: nil)
-                    )
-                }
-
+                result(data.toMap())
             case .failure(let error):
                 result(FlutterError(code: "",
                                     message: error.localizedDescription,
@@ -129,7 +119,7 @@ public class FlutterPrinceOfVersionsPlugin: NSObject, FlutterPlugin {
 
 }
 
-struct AppStoreUpdateData: Encodable {
+struct AppStoreUpdateData {
 
     let status: UpdateStatus
     let version: Version
@@ -140,14 +130,12 @@ struct AppStoreUpdateData: Encodable {
         self.version = version
         self.appStoreUpdateInfo = updateInfo
     }
-
-    func asDictionary() throws -> [String: Any] {
-        let data = try JSONEncoder().encode(self)
-        guard let dictionary = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String: Any] else {
-          throw NSError()
-        }
-        return dictionary
-      }
+    
+    func toMap() -> [String: Any] {
+        return [Constants.UpdateData.status: status.toString(),
+                Constants.UpdateData.version: version.toMap(),
+                Constants.UpdateData.updateInfo: appStoreUpdateInfo.toMap()]
+    }
 }
 
 class UpdateData {
@@ -168,7 +156,7 @@ class UpdateData {
         return [Constants.UpdateData.status: status.toString(),
                 Constants.UpdateData.version: version.toMap(),
                 Constants.UpdateData.updateInfo: updateInfo.toMap(),
-                Constants.UpdateData.meta: metadata]
+                Constants.UpdateData.metadata: metadata]
     }
 }
 
@@ -177,23 +165,11 @@ extension UpdateStatus {
     func toString() -> String {
         switch self {
         case .newUpdateAvailable:
-            return Constants.UpdateStatus
-                .updateAvailable
+            return Constants.UpdateStatus.newUpdateAvailable
         case .noUpdateAvailable:
-            return Constants.UpdateStatus.noUpdate
+            return Constants.UpdateStatus.noUpdateAvailable
         case .requiredUpdateNeeded:
-            return Constants.UpdateStatus.requiredUpdate
-        }
-    }
-}
-
-extension UpdateStatus: Encodable {
-    public func encode(to encoder: Encoder) throws {
-        var container = encoder.singleValueContainer()
-        switch (self) {
-        case .noUpdateAvailable: try container.encode(toString())
-        case .requiredUpdateNeeded: try container.encode(toString())
-        case .newUpdateAvailable: try container.encode(toString())
+            return Constants.UpdateStatus.requiredUpdateNeeded
         }
     }
 }
@@ -218,6 +194,6 @@ extension UpdateInfo {
 extension AppStoreUpdateInfo {
     func toMap() -> [String: Any?] {
         return [Constants.UpdateInfo.lastVersionAvailable: lastVersionAvailable?.toMap(),
-                Constants.UpdateInfo.installedVersion: installedVersion.toMap(),]
+                Constants.UpdateInfo.installedVersion: installedVersion.toMap()]
     }
 }

@@ -5,9 +5,9 @@ enum Constants {
     static let requirementCheck = "REQUIREMENT_CHECK"
     
     enum UpdateStatus {
-        static let updateAvailable = "update-available"
-        static let noUpdate = "no-update"
-        static let requiredUpdate = "required-update"
+        static let newUpdateAvailable = "newUpdateAvailable"
+        static let noUpdateAvailable = "noUpdateAvailable"
+        static let requiredUpdateNeeded = "requiredUpdateNeeded"
     }
 
     enum Version {
@@ -27,22 +27,19 @@ enum Constants {
         static let status = "status"
         static let version = "version"
         static let updateInfo = "updateInfo"
-        static let meta = "metadata"
+        static let metadata = "metadata"
     }
 
     enum Error {
-        static let invalidJSONCode = "1"
-        static let invalidJSONMessage = "Invalid JSON"
-        static let invalidURLCode = "2"
         static let invalidURLMessage = "Invalid URL"
-        static let dataParseError = "Error occurred while parsing the data."
     }
 
     enum Flutter {
         static let channelName = "flutter_prince_of_versions"
-        static let requirementsChannelName = "flutter_prince_of_versions_requirements"
-        static let requirementsMethodName = "request_options"
         static let checkForUpdatesMethodName = "check_for_updates"
-        static let checkUpdatesFromStoreMethodName = "check_updates_from_app_store"
+        static let checkForUpdatesFromAppStoreMethodName = "check_for_updates_from_app_store"
+        
+        static let requirementsChannelName = "flutter_prince_of_versions_requirements"
+        static let checkRequirementMethodName = "check_requirement"
     }
 }

@@ -16,8 +16,46 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  String androidUrl = 'https://pastebin.com/raw/FBMxHpN7';
-  String iOSUrl = 'https://pastebin.com/raw/0MfYmWGu';
+  static const androidUrl = 'https://pastebin.com/raw/FBMxHpN7';
+  static const iOSUrl = 'https://pastebin.com/raw/0MfYmWGu';
+
+  Future<void> _checkForUpdates() async {
+    String url = Platform.isAndroid ? androidUrl : iOSUrl;
+
+    try {
+      final updateData = await FlutterPrinceOfVersions.checkForUpdates(
+        url: url,
+        requirementChecks: {
+          'region': (value) {
+            return value == 'hr';
+          },
+          'bluetooth': (value) {
+            return value == '5.0';
+          }
+        },
+      );
+
+      print('Update status: ${updateData.status}');
+      print('Installed version: ${updateData.updateInfo.installedVersion}');
+      print('Last version: ${updateData.updateInfo.lastVersionAvailable}');
+      print('Metadata: ${updateData.metadata}');
+    } catch (error) {
+      print(error);
+    }
+  }
+
+  Future<void> _checkForUpdatesFromAppStore() async {
+    final updateData =
+        await FlutterPrinceOfVersions.checkForUpdatesFromAppStore();
+    print('Update status: ${updateData.status}');
+    print('Current version: ${updateData.version}');
+  }
+
+  Future<void> _checkForUpdatesFromGooglePlay() async {
+    final callback = MyCallback(context);
+    await FlutterPrinceOfVersions.checkForUpdatesFromGooglePlay(
+        "Google Play url", callback);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,63 +71,21 @@ class _MyAppState extends State<MyApp> {
           ),
           SizedBox(height: 40),
           CupertinoButton.filled(
-              child: Text('Check for updates'),
-              onPressed: () async {
-                String url = Platform.isAndroid ? androidUrl : iOSUrl;
-
-                dynamic data;
-                try {
-                  data = await FlutterPrinceOfVersions.checkForUpdates(
-                    url: url,
-                    shouldPinCertificates: false,
-                  );
-                } catch (error) {
-                  print(error);
-                  // do something on error
-                }
-                print('Update status: ${data.status.toString()}');
-                print('Current version: ${data.updateInfo.installedVersion}');
-                print('Last available major version: ${data.updateInfo.lastVersionAvailable.major}');
-                print(data.meta.metadata);
-              }),
+            child: Text('Check for updates'),
+            onPressed: _checkForUpdates,
+          ),
           SizedBox(height: 20),
           CupertinoButton.filled(
-              child: Text('App Store test'),
-              onPressed: () async {
-                final data = await FlutterPrinceOfVersions.checkForUpdatesFromAppStore(
-                    trackPhasedRelease: true, notifyOnce: false);
-                print('Update status: ${data.status.toString()}');
-                print('Current version: ${data.version.major}');
-              }),
+            child: Text('Check App Store updates'),
+            onPressed: _checkForUpdatesFromAppStore,
+          ),
           SizedBox(height: 20),
           CupertinoButton.filled(
-              child: Text('Play Store test'),
-              onPressed: () async {
-                final Callback callback = MyCallback(context);
-                await FlutterPrinceOfVersions.checkForUpdatesFromGooglePlay(
-                    "http://pastebin.com/raw/QFGjJrLP", callback);
-              }),
+            child: Text('Check Google Play updates'),
+            onPressed: _checkForUpdatesFromGooglePlay,
+          ),
         ],
       ),
-    );
-  }
-
-  void showAlert(String title, String content) {
-    showDialog<bool>(
-      context: context,
-      builder: (BuildContext context) {
-        return CupertinoAlertDialog(
-          title: Text(title),
-          content: Text(content),
-          actions: <Widget>[
-            CupertinoDialogAction(
-              child: Text("Ok"),
-              isDestructiveAction: false,
-              onPressed: () => Navigator.pop(context, true),
-            ),
-          ],
-        );
-      },
     );
   }
 }

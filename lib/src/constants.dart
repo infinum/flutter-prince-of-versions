@@ -3,9 +3,9 @@ part of flutter_prince_of_versions;
 class Constants {
   Constants._();
 
-  static const updateAvailable = "update-available";
-  static const noUpdate = "no-update";
-  static const requiredUpdate = "required-update";
+  static const newUpdateAvailable = "newUpdateAvailable";
+  static const noUpdateAvailable = "noUpdateAvailable";
+  static const requiredUpdateNeeded = "requiredUpdateNeeded";
 
   static const major = "major";
   static const minor = "minor";
@@ -19,7 +19,6 @@ class Constants {
   static const status = "status";
   static const version = "version";
   static const updateInfo = "updateInfo";
-
   static const metadata = "metadata";
 
   static const versionCode = "versionCode";
@@ -39,8 +38,13 @@ class Constants {
   static const onPending = "on_pending";
 
   static const channelName = "flutter_prince_of_versions";
-  static const requirementsChannelName = "flutter_prince_of_versions_requirements";
   static const checkForUpdatesMethodName = "check_for_updates";
-  static const checkUpdatesFromAppStoreMethodName = "check_updates_from_app_store";
-  static const checkUpdatesFromPlayStoreMethodName = "check_updates_from_play_store";
+  static const checkForUpdatesFromAppStoreMethodName =
+      "check_for_updates_from_app_store";
+  static const checkForUpdatesFromGooglePlayMethodName =
+      "check_for_updates_from_google_play";
+
+  static const requirementsChannelName =
+      "flutter_prince_of_versions_requirements";
+  static const checkRequirementMethodName = "check_requirement";
 }
