@@ -96,18 +96,11 @@ class Version {
   }
 
   String toString() {
-    final buffer = StringBuffer();
-    buffer.write(major);
-    if (minor != null) {
-      buffer.write('.$minor');
-    }
-    if (patch != null) {
-      buffer.write('.$patch');
-    }
+    var s = [major, minor, patch].whereType<int>().join('.');
     if (build != null) {
-      buffer.write(' build:$build');
+      s += ':$build';
     }
-    return buffer.toString();
+    return s;
   }
 }
 
