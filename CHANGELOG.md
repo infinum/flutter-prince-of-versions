@@ -1,3 +1,7 @@
+## 2.0.1
+
+* Updated underlying native PoV libraries.
+
 ## 2.0.0
 
 * Null-safety.
