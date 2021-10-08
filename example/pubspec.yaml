@@ -8,16 +8,12 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-
   flutter_prince_of_versions:
     path: ../
-
-  cupertino_icons: ^0.1.3
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
 flutter:
-
   uses-material-design: true
