@@ -118,7 +118,7 @@ class FlutterPrinceOfVersionsPlugin : FlutterPlugin, MethodCallHandler, Activity
                                 override fun success(result: Any?) {
                                     cont.resume(result as Boolean)
                                 }
-                                override fun error(errorCode: String?, errorMessage: String?, errorDetails: Any?) {
+                                override fun error(errorCode: String, errorMessage: String?, errorDetails: Any?) {
                                     cont.resume(false)
                                 }
                                 override fun notImplemented() {
