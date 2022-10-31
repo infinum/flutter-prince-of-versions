@@ -1,3 +1,7 @@
+## 2.2.0
+
+* Migrate to mavenCentral() from jcenter()
+
 ## 2.1.0
 
 * Upgrade to Flutter 3.0.0

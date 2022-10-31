@@ -5,7 +5,7 @@ buildscript {
     ext.kotlin_version = '1.4.20'
     repositories {
         google()
-        jcenter()
+        mavenCentral()
     }
 
     dependencies {
@@ -17,7 +17,7 @@ buildscript {
 rootProject.allprojects {
     repositories {
         google()
-        jcenter()
+        mavenCentral()
     }
 }
 
@@ -42,7 +42,7 @@ android {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'co.infinum:prince-of-versions:4.0.+'
-    implementation 'co.infinum:queen-of-versions:0.3.+'
+    implementation 'co.infinum:prince-of-versions:4.0.4'
+    implementation 'co.infinum:queen-of-versions:0.3.2'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.2'
 }
