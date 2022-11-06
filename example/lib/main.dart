@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
@@ -7,12 +9,14 @@ import 'package:flutter_prince_of_versions/flutter_prince_of_versions.dart';
 import 'my_callback.dart';
 
 void main() {
-  runApp(MaterialApp(home: Scaffold(body: MyApp())));
+  runApp(const MaterialApp(home: Scaffold(body: MyApp())));
 }
 
 class MyApp extends StatefulWidget {
+  const MyApp({Key? key}) : super(key: key);
+
   @override
-  _MyAppState createState() => _MyAppState();
+  State createState() => _MyAppState();
 }
 
 class _MyAppState extends State<MyApp> {
@@ -62,27 +66,27 @@ class _MyAppState extends State<MyApp> {
     return SafeArea(
       child: Column(
         children: <Widget>[
-          SizedBox(height: 100),
-          Center(
+          const SizedBox(height: 100),
+          const Center(
             child: Text(
               'Prince of Versions example',
               style: TextStyle(fontSize: 24),
             ),
           ),
-          SizedBox(height: 40),
+          const SizedBox(height: 40),
           CupertinoButton.filled(
-            child: Text('Check for updates'),
             onPressed: _checkForUpdates,
+            child: const Text('Check for updates'),
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           CupertinoButton.filled(
-            child: Text('Check App Store updates'),
             onPressed: _checkForUpdatesFromAppStore,
+            child: const Text('Check App Store updates'),
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           CupertinoButton.filled(
-            child: Text('Check Google Play updates'),
             onPressed: _checkForUpdatesFromGooglePlay,
+            child: const Text('Check Google Play updates'),
           ),
         ],
       ),

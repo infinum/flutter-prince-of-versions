@@ -13,11 +13,11 @@ class MyCallback extends Callback {
       context: _context,
       builder: (BuildContext context) {
         return CupertinoAlertDialog(
-          title: Text('An error occurred'),
-          content: Text('$localizedMessage'),
+          title: const Text('An error occurred'),
+          content: Text(localizedMessage),
           actions: <Widget>[
             CupertinoDialogAction(
-              child: Text('Ok'),
+              child: const Text('Ok'),
               onPressed: () => Navigator.pop(context, true),
             ),
           ],
