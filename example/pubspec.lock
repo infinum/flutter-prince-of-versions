@@ -48,18 +48,32 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_lints:
+    dependency: "direct dev"
+    description:
+      name: flutter_lints
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.1"
   flutter_prince_of_versions:
     dependency: "direct main"
     description:
       path: ".."
       relative: true
     source: path
-    version: "2.1.0"
+    version: "2.2.1"
   flutter_test:
     dependency: "direct dev"
     description: flutter
     source: sdk
     version: "0.0.0"
+  lints:
+    dependency: transitive
+    description:
+      name: lints
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.1"
   matcher:
     dependency: transitive
     description:

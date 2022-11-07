@@ -95,6 +95,7 @@ class Version {
     );
   }
 
+  @override
   String toString() {
     var s = [major, minor, patch].whereType<int>().join('.');
     if (build != null) {
