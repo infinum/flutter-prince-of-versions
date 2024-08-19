@@ -1,3 +1,7 @@
+## 2.2.2
+
+- Updated Android Queen of Versions library
+
 ## 2.2.1
 
 - Add linting rules from `flutter_lints` package
