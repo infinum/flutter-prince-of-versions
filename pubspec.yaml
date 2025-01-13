@@ -1,6 +1,6 @@
 name: flutter_prince_of_versions
 description: Library for easier versioning of your applications. You can check for updates from a remote server, Google Play or App Store.
-version: 2.2.2
+version: 2.2.3
 repository: https://github.com/infinum/flutter-prince-of-versions
 homepage: https://github.com/infinum/flutter-prince-of-versions
 
