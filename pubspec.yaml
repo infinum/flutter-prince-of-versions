@@ -21,7 +21,7 @@ flutter:
   plugin:
     platforms:
       android:
-        package: com.example.flutter_prince_of_versions
+        package: com.infinum.flutter_prince_of_versions
         pluginClass: FlutterPrinceOfVersionsPlugin
       ios:
         pluginClass: FlutterPrinceOfVersionsPlugin
