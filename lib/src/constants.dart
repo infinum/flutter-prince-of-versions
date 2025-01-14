@@ -1,4 +1,4 @@
-part of flutter_prince_of_versions;
+part of '../flutter_prince_of_versions.dart';
 
 class Constants {
   Constants._();

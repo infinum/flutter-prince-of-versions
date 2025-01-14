@@ -1,4 +1,4 @@
-package com.example.flutter_prince_of_versions
+package com.infinum.flutter_prince_of_versions
 
 object Constants {
     const val NEW_UPDATE_AVAILABLE = "newUpdateAvailable"
@@ -35,7 +35,7 @@ object Constants {
     const val CHANNEL_NAME = "flutter_prince_of_versions"
     const val CHECK_FOR_UPDATES_METHOD_NAME = "check_for_updates"
     const val CHECK_FOR_UPDATES_FROM_GOOGLE_PLAY_METHOD_NAME = "check_for_updates_from_google_play"
-    
+
     const val REQUIREMENTS_CHANNEL_NAME = "flutter_prince_of_versions_requirements"
     const val CHECK_REQUIREMENT_METHOD_NAME = "check_requirement"
 }

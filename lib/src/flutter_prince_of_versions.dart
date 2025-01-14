@@ -1,4 +1,4 @@
-part of flutter_prince_of_versions;
+part of '../flutter_prince_of_versions.dart';
 
 /// Signature for a function that checks if a requirement is satisfied.
 typedef RequirementCheck = FutureOr<bool> Function(dynamic);

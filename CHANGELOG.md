@@ -1,3 +1,8 @@
+## 2.2.3
+
+- Update dependencies
+- Android improvements
+
 ## 2.2.2
 
 - Updated Android Queen of Versions library

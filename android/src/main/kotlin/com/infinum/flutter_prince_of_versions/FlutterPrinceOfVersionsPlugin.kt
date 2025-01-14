@@ -1,4 +1,4 @@
-package com.example.flutter_prince_of_versions
+package com.infinum.flutter_prince_of_versions
 
 import android.app.Activity
 import android.content.Context
